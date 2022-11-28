@@ -6,6 +6,7 @@ import csv
 import time
 import pathlib
 
+#Em colaboração com o @gsgouvea91
 class Controle:
     #Pega o caminho das pastas automaticamente
     path = os.path.dirname(os.path.abspath(__file__)) +'\\Entrada'
@@ -26,7 +27,7 @@ class Controle:
         """
         opcao = int(input(txt))
         return opcao
-
+    #Função que itera sobre as opções:
     def main(self):
         opcoes = {1:self.opcao1, 2:self.opcao2, 3:self.opcao3, 4:self.opcao4}
         while True:
