@@ -1,3 +1,18 @@
+records = [
+    ('foo', 1, 2),
+    ('bar', 'hello'),
+    ('foo', 3,4),
+]
+def do_foo(x,y):
+    print('foo', x, y)
+def do_bar(s):
+    print('bar',s)
+for tag, *args in records:
+    if tag=='foo':
+        do_foo(*args)
+    elif tag=='bar':
+        do_bar(*args)
+        
 #var = input('Do you want to contract extra shipping? (yes/not) \n')
 # This prevents using var = 'yes' or var='YES' or var = 'Yes', etc...
 #if var.lower() == 'yes':
@@ -38,14 +53,3 @@
 #    print('Congratulations! Not work anymore in your life!!!')
 #else:
 #    print('Well... If you\'re seeing this message, something wrong is not right...')
-
-x=1
-while x<10:
-    print('X is currently: ', x)
-    x += 1
-else:
-    print('X is currently: ', x)
-
-while True:
-    if x%2==0:
-        

@@ -4,10 +4,10 @@ import cv2
 import os
 import csv
 import time
-
+#DETECTA OBJETOS DE ACORDO COM OS CASCADES(MODELOS) TREINADOS POR MIM.
 #Altere para o cascade treinado
-cascade_treinado = cv2.CascadeClassifier('C:/Users/Breno/Documents/VS Code Projects/Python/haarcascades/cascade.xml')
-cascade_treinado03 = cv2.CascadeClassifier('C:/Users/Breno/Documents/VS Code Projects/Python/haarcascades/cascade03.xml')
+cascade_treinado = cv2.CascadeClassifier('C:/Users/breno/Python/Visão computacional/haarcascades/cascade.xml')
+cascade_treinado03 = cv2.CascadeClassifier('C:/Users/breno/Python/Visão computacional/haarcascades/cascade03.xml')
 
 class Controle:   
     def main(self):
@@ -31,7 +31,7 @@ class Controle:
             
             #chegou ao último frame ou houve erro? então sair!
             if(frameExiste == False):
-                print("Algo de errado não está certo com a câmera!!!")
+                print("Algo de errado com a câmera!!!")
                 cap.release()
                 return
             

@@ -5,11 +5,12 @@ global img
 class Controle:
     #Função para facilitar a escrita nas imagem
     def main(self):
-        imagemCarregada = cv2.imread('street.jpg') #Carregamento da imagem
-        #Se necessário o redimensioamento da imagem pode vir aqui.
+        imagemCarregada = cv2.imread('Non mi avette fatto niente.jpg') #Carregamento da imagem
+        #Se necessário o redimensionamento da imagem pode vir aqui.
+        half = cv2.resize(imagemCarregada, (500,500))
         
         #Passo 1: Conversão para escala de cinza: 
-        img = cv2.cvtColor(imagemCarregada, cv2.COLOR_BGR2GRAY)
+        img = cv2.cvtColor(half, cv2.COLOR_BGR2GRAY)
 
         #Passo 2: Blur/Suavização da imagem
         suave = cv2.GaussianBlur(img, (7, 7), 0)

@@ -2,7 +2,7 @@ import urllib.request
 import cv2
 import numpy as np
 import os
-
+##takes an image from internet and applies some modifications
 def store_raw_images():
     neg_images_link = 'http://image-net.org/api/text/imagenet.synset.geturls?wnid=n00523513'   
     neg_image_urls = urllib.request.urlopen(neg_images_link).read().decode()
