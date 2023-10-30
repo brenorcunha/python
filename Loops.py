@@ -1,16 +1,8 @@
 import turtle
 #Quatro quadrados em 1 - versão 1:
-#for stepes in range (4):
-#    turtle.forward(100)
-#    turtle.right(90)
-
-#for steps2 in range (3):
-#    turtle.forward(100)
-#    turtle.left(90)
-
-#for steps3 in range (4):
-#    turtle.forward(100)
-#    turtle.right(90)
+""" for steps in range (4):
+   turtle.forward(100)
+   turtle.right(90) """
 
 #turtle.forward(200)
 #turtle.right(90)
@@ -23,22 +15,22 @@ import turtle
 #turtle.forward(100)
 
 #Quatro quadrados em 1 com SUBLOOP:
-#for steps in range (4):
-#    turtle.forward(100)
-#    turtle.right(90)
-#    for steps2 in range(4):
-#        turtle.forward(50)
-#        turtle.right(90)
+""" for steps in range (4):
+   turtle.forward(100)
+   turtle.right(90)
+   for steps2 in range(4):
+       turtle.forward(50)
+       turtle.right(90) """
 
 # 2ND PART: 
 #Desenha qualquer figura especificando os lados:
-#nbrSides = 50
-#for stesps in range(nbrSides):
-#    turtle.forward(50)
-#   turtle.right(360/nbrSides)
-#    for moresteps in range (nbrSides):
-#        turtle.forward(25)
-#        turtle.right(360/nbrSides)
+""" nbrSides = 50
+for stesps in range(nbrSides):
+   turtle.forward(50)
+   turtle.right(360/nbrSides)
+   for moresteps in range (nbrSides):
+       turtle.forward(25)
+       turtle.right(360/nbrSides) """
 
 # SUBSQUARES (LONG CODE):
 #for i in range (4):

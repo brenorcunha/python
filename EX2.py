@@ -1,13 +1,15 @@
 #usr/bin/env python
 # -*- coding: utf-8 -*-
+import hashlib
 class LinkedList(object):
-    def __init__(self, tipo, descicao):
+    def __init__(self, tipo, h, tam, descricao):
         self.root = None
         self.size = None
         self.tipo = tipo
         self.h = h
         self.tam = tam
         self.descricao = descricao
+    lista = []
     def funcao_hashing(descricao, tam):
         h = '%s: %s'.__mod__((descricao,tam))
         return h

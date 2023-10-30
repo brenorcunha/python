@@ -72,7 +72,14 @@ class Control:
             faces3 = face_alt2_cascade.detectMultiScale(gray, 1.1, 5, minSize=(50,50))
             faces4 = face_alt_tree_cascade.detectMultiScale(gray, 1.1, 5, minSize=(50,50))
 
-            classifiers = [faces, faces2, faces3, faces4]
+            faces5 = face_eye_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+            faces6 = face_eyeglasses_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+            faces7 = fullbody_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+            faces8 = face_lefteye_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+            faces9 = face_righteye_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+            faces10 = face_profileface.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+            faces11 = face_smile_cascade.detectMultiScale(gray, 1.1, 5, minSize =(20,20))
+            classifiers = [faces, faces2, faces3, faces4, faces5, faces6, faces7, faces8, faces9, faces, faces11]
 
             for (classifier) in classifiers:
                 test = format(len(classifier))
@@ -124,12 +131,15 @@ class Control:
                 faces3 = face_alt2_cascade.detectMultiScale(gray, 1.1, 5, minSize=(30,30))
                 faces4 = face_alt_tree_cascade.detectMultiScale(gray, 1.1, 5, minSize=(30,30))
 
-                faces5 = face_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
-                faces6 = face_alt_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
-                faces7 = face_alt2_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
-                faces8 = face_alt_tree_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+                faces5 = face_eye_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+                faces6 = face_eyeglasses_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+                faces7 = fullbody_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+                faces8 = face_lefteye_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+                faces9 = face_righteye_cascade.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+                faces10 = face_profileface.detectMultiScale(gray, 1.1, 5, minSize=(20,20))
+                faces11 = face_smile_cascade.detectMultiScale(gray, 1.1, 5, minSize =(20,20))
 
-                classifiers = [faces, faces2, faces3, faces4,faces5, faces6, faces7, faces8]
+                classifiers = [faces, faces2, faces3, faces4,faces5, faces6, faces7, faces8, faces9, faces10, faces11]
 
                 for (classifier) in classifiers:
                     test = format(len(classifier))
@@ -184,8 +194,8 @@ class Control:
         file_list_positive = search_folder(control.path1,".jpg")
         file_list_negative = search_folder(control.path2,".jpg")
 
-        tratamentoIMG(control.path1,file_list_positive,"positive",50)
-        tratamentoIMG(control.path2,file_list_negative,"negative",100)
+        imageProcessing(control.path1,file_list_positive,"positive",50)
+        imageProcessing(control.path2,file_list_negative,"negative",100)
         
         positiveDescriptors()
         negativeDescriptors()
@@ -267,9 +277,15 @@ face_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_frontalface_de
 face_alt_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_frontalface_alt.xml')
 face_alt2_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_frontalface_alt2.xml')
 face_alt_tree_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_frontalface_alt_tree.xml')
-
-
-def tratamentoIMG(path,file_list,tipo,tamanho):
+face_eye_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_eye.xml')
+face_eyeglasses_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_eye_tree_eyeglasses.xml')
+fullbody_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_fullbody.xml')
+face_lefteye_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_lefteye_2splits.xml')
+face_righteye_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_righteye_2splits.xml')
+face_profileface = cv2.CascadeClassifier('../haarcascades/haarcascade_profileface.xml')
+face_smile_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_smile.xml')
+                                         
+def imageProcessing(path,file_list,tipo,size):
     pic_num=0
     os.chdir(path)
     #negative image processing:
@@ -278,7 +294,7 @@ def tratamentoIMG(path,file_list,tipo,tamanho):
         for file in file_list:
             img = cv2.imread(file)
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            resized_img = cv2.resize(gray, (tamanho, tamanho))
+            resized_img = cv2.resize(gray, (size, size))
             cv2.imwrite(tipo+str(pic_num)+ ".jpg", resized_img)
             #print("Echo!")
             pic_num+=1

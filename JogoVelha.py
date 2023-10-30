@@ -10,7 +10,7 @@ while True:
     """))
     tabuleiro[posicao]= simbolo
     if tabuleiro[1] and tabuleiro[2] and tabuleiro[3] and tabuleiro[4] and tabuleiro[5] and tabuleiro[6] and tabuleiro[7] and tabuleiro[8] and tabuleiro[9]:
-        print('Deu velha, abestados!')
+        print('Deu velha!')
         break
     elif tabuleiro[1] == simbolo and tabuleiro[2] == simbolo and tabuleiro[3] == simbolo:
         print('Ganhou', simbolo)
