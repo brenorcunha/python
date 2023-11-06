@@ -67,17 +67,17 @@
     # return duplicatas
 
 # Matrizes (conjunto de listas): 
-#list_1=[1,2,3]
-#list_2=[4,5,6]
-#list_3=[7,8,9]
-#matriz= [list_1, list_2, list_3]
-#for i in range (3):
-#    for j in range (3):
-#        temp = matriz[i][j]
-#        temp = pow(temp,2)
-#        matriz[i][j] = temp
-#        print(matriz[i][j])
-#       temp=0
+list_1=[1,2,3]
+list_2=[4,5,6]
+list_3=[7,8,9]
+matriz= [list_1, list_2, list_3]
+for i in range (3):
+   for j in range (3):
+       temp = matriz[i][j]
+       temp = pow(temp,2)
+       matriz[i][j] = temp
+       print(matriz[i][j])
+       temp=0
 
 # pra pegar qualquer posiçao da matriz, [indice][indice], primeiro índice referente à lista, (0, 1 e 2) e depois à posição.
 #matriz[2][1] # Pega o número 9.
@@ -97,5 +97,5 @@
 #    print(char)
 
 # Crio uma cópia temporária e converto na nova
-celsius=[0,10,15,20,30,50,100]
-farenheit=[(temp*(9/5)+32) for temp in celsius]
+# celsius=[0,10,15,20,30,50,100]
+# farenheit=[(temp*(9/5)+32) for temp in celsius]

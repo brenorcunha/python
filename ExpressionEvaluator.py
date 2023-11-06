@@ -39,10 +39,12 @@ class ExpressionEvaluator:
           return True
         else:
             return False
+    
     def _expect(self, toktype):
         'Consume next token if it matches toktype or raise SyntaxError'
-        if not self._accespt(toktype):
+        if not self._accept(toktype):
             raise SyntaxError('Expected '+ toktype)
+    
     def expr(self):
         "expression::=term{('+'|'-') term}*"
         exprval =self.term()
@@ -54,6 +56,7 @@ class ExpressionEvaluator:
             elif op=='MINUS':
                 exprval-=right
         return exprval
+    
     def term(self):
         "term::=factor {('*'|'/') factor}*"
         termval = self.factor()
@@ -65,6 +68,7 @@ class ExpressionEvaluator:
             elif op=='DIVIDE':
                 exprval/=right
         return termval
+    
     def factor(self):
         "factor::=NUM/(expr)"
         if self._accept('NUM'):
@@ -74,5 +78,4 @@ class ExpressionEvaluator:
             self._expect('RPAREN')
             return exprval
         else:
-            raise SyntaxError('Expected NUMBER or LEFT PARENTHESIS')
-#Page 73
+            raise SyntaxError('Expected NUMBER or PARENTHESIS')

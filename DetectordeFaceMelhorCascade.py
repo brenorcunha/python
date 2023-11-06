@@ -23,10 +23,10 @@ for file in file_list:
     aux =0
     aux1 =1
     #Estabelece os classificadores de face
-    face_cascade = cv2.CascadeClassifier('C:/Users/breno/python/haarcascades/haarcascade_frontalface_default.xml')
-    face_alt_cascade = cv2.CascadeClassifier('C:/Users/breno/python/haarcascades/haarcascade_frontalface_alt.xml')
-    face_alt2_cascade = cv2.CascadeClassifier('C:/Users/breno/python/haarcascades/haarcascade_frontalface_alt2.xml')
-    face_alt_tree_cascade = cv2.CascadeClassifier('C:/Users/breno/python/haarcascades/haarcascade_frontalface_alt_tree.xml')
+    face_cascade = cv2.CascadeClassifier('./ReconheceObjetosVC/haarcascades/haarcascade_frontalface_default.xml')
+    face_alt_cascade = cv2.CascadeClassifier('./ReconheceObjetosVC/haarcascades/haarcascade_frontalface_alt.xml')
+    face_alt2_cascade = cv2.CascadeClassifier('./ReconheceObjetosVC/haarcascades/haarcascade_frontalface_alt2.xml')
+    face_alt_tree_cascade = cv2.CascadeClassifier('./ReconheceObjetosVC/haarcascades/haarcascade_frontalface_alt_tree.xml')
 
     #Lê a imagem e converte para escala de cinza
     img = cv2.imread(file)
