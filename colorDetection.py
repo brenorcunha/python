@@ -1,146 +1,123 @@
-import os
-import numpy as np
-import cv2
+class ulColor(object):
+    import os
+    import numpy as np
+    import cv2
 
-class Controle:
-    
+class Control:
     def menu(self):
         txt = """
-        ESCOLHA A COR A SER DETECTADA:
-            1-Vermelho
-            2-Verde
-            3-Azul
-            4-Sair
-        Digite a sua opção
+        CHOOSE THE COLOR TO BE DETECTED: 
+            1-Red
+            2-Green
+            3-Blue
+            4-Exit
+        Enter your choice: 
         """
-        opcao = int(input(txt))
-        return opcao
+        option = int(input(txt))
+        return option
 
-#FUNÇÃO MAIN PEDE O NOME DA IMAGEM E CONVERTE PARA HSV
-
+    # MAIN FUNCTION: PROMPTS FOR IMAGE NAME AND CONVERTS IT TO HSV
     def main(self):
-        while True:  #Input e procura do nome da imagem (precisa estar na mesa pasta que o .py)
-            #img = input("Digite o nome da imagem com a extensao EX: img.ext : ")
-            #file = os.path.realpath(img)
-            
-            global imagem,imagem1 #variável GLOBAL
-            imagem = cv2.imread('A.jpg')#Lê A imagem
-            imagem1 = cv2.imread('A.jpg')
-            
-            #Converte de BGR para HSV
+        while True:
+            # Input and search for the image name (it needs to be in the same folder as the .py file)
+            # img = input("Enter the image name with extension, e.g., img.ext: ")
+            # file = os.path.realpath(img)
+
+            global image, image1
+            image = cv2.imread('corshow.png')
+            image1 = cv2.imread('corshow.png')
+
+            # Convert from BGR to HSV
             try:
-                global hsv #variável GLOBAL
-                hsv = cv2.cvtColor(imagem,cv2.COLOR_BGR2HSV) #Conversão BGR para HSV
+                global hsv
+                hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)  # Convert BGR to HSV
                 break
             except:
-                print("Imagem nao encontrada")
+                print("Image not found")
 
-            
-#////////////////MENU/////////////////////
-    #Menu de escolha de cor pra achar           
-        opcoes = {1:self.opcao1, 2:self.opcao2, 3:self.opcao3}
-        while True:
-            opcao = self.menu()
-            if opcao in opcoes:
-                opcoes[opcao]()
-                break
-            else:
-                if opcao == 4:
-                    break
-                else:
-                    print("Opção inválida")
+    # MENU FOR COLOR DETECTION AND RESULT GENERATION
+    def option1(self):
+        # Detect RED
+        ulColor.maskRes(ulColor.rColor(0, 10, 10), ulColor1.rColor(200, 255, 255))
 
-#////////////////DETECÇÃO DE CORES E GERAÇÃO DO RESULTADO/////////////////////
-    
-    def opcao1(self):  #Detecta VERMELHO
-        cor=1
-        ulCor.maskRes(ulCor.rColor(0,10,10),ulCor1.rColor(200,255,255))
+    def option2(self):
+        # Detect GREEN
+        ulColor.maskRes(ulColor.rColor(20, 20, 20), ulColor1.rColor(80, 255, 255))
 
-    def opcao2(self): #Detecta VERDE
-        ulCor.maskRes(ulCor.rColor(20,20,20),ulCor1.rColor(80,255,255))
+    def option3(self):
+        # Detect BLUE
+        ulColor.maskRes(ulColor.rColor(75, 100, 100), ulColor1.rColor(150, 255, 255))
 
-    def opcao3(self): #Detecta AZUL
-        ulCor.maskRes(ulCor.rColor(75,100,100),ulCor1.rColor(150,255,255))
-
-
-#Classe que trata o processamento da máscara e o resultado
-class ulColor(object):
-
-    #Range de detecão de Cor
+# Class that handles mask processing: 
+    #Setting up color detection range.
     def rColor(self, h, s, v):
-        self.rangeUL=np.array([h,s,v],np.uint8)
+        self.rangeUL = np.array([h,s,v],np.uint8)
         return self.rangeUL
 
-    #Gera a mascara, pede 2 instancias da classe para usar método acima
-    def maskRes(self, ulCor, ulCor1):    
-        
-        #GERA MASCARA 
-        mask = cv2.inRange(hsv, ulCor, ulCor1)
+    # Generates the mask, asks for two instances of the class to use the above method: 
+    def maskRes(self, ulColor, ulColor1):    
+        #GENERATE MASK
+        mask = cv2.inRange(hsv, ulColor, ulColor1)
         mask = cv2.GaussianBlur(mask, (1, 1), 0)
-        res = cv2.bitwise_and(imagem,imagem, mask=mask)
-        resO = cv2.bitwise_and(imagem,imagem, mask=mask)
+        res = cv2.bitwise_and(image,image, mask=mask)
+        res0 = cv2.bitwise_and(image,image, mask=mask)
         
-        #GERA MASCARA INVERTIDA
-        mask_inv = cv2.bitwise_not(mask)
-        res1 = cv2.bitwise_and(imagem,imagem, mask=mask_inv)
+        #GENERATE REVERSE MASK
+        reverse_mask = cv2.bitwise_not(mask)
+        res1 = cv2.bitwise_and(image,image, mask=reverse_mask)
         
         zeros = np.zeros(res.shape[:2], dtype = "uint8")
         test = cv2.bitwise_not(mask)
-
+        
         gray = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
-        suave = cv2.GaussianBlur(gray, (7, 7), 0)
-
-        bordas = cv2.Canny(mask_inv, 5, 150)
-        (objetos, lx) = cv2.findContours(bordas.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        antiAliasing = cv2.GaussianBlur(gray, (7, 7), 0)
         
-        #Desenha contorno amarelo na mascara invertida (20,202,255)
-        t2 = cv2.drawContours(imagem1, objetos, -1, (20,202, 255), 2)
-        #cv2.imshow("Quantidade de objetos: "+str(len(objetos)), imagem)
+        borders = cv2.Canny(reverse_mask, 5, 150)
+        (objects, lx) = cv2.findContours(borders.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
-        #Divisão da area selecionada em canais RGB
-        (canalAzul, canalVerde, canalVermelho) = cv2.split(res)
-
-        res1 = cv2.bitwise_and(imagem,imagem, mask=mask_inv)
+        # Draw Yellow Outline on Inverted Mask (20,202,255)
+        t2 = cv2.drawContours(image1, objects, -1, (20,202, 255), 2)
+        #cv2.imshow("Number of objects: "+str(len(objects)), image)
+        
+        # Splitting the selected area into RGB channels
+        (blueChannel, greenChannel, redChannel) = cv2.split(res)
+        
+        res1 = cv2.bitwise_and(image,image, mask=reverse_mask)
         test = cv2.bitwise_not(mask)
-
+        
         v1 = -1
         v2 = -1
         v3 = -1
         
-        #Inserir valor dos multiplicadores
         while (v1 <0 or v1 >255): 
-            v1 = int(input("Insira Multiplicador Canal [R] Entre 0 e 255: "))
+            v1 = int(input("Enter Multiplier for Channel [RED] Between 0 and 255: "))
         while (v2 <0 or v2 >255): 
-            v2 = int(input("Insira Multiplicador Canal [G] Entre 0 e 255: "))
+            v2 = int(input("Enter Multiplier for Channel [GREEN] Between 0 and 255: "))
         while (v3 <0 or v3 >255): 
-            v3 = int(input("Insira Multiplicador Canal [B] Entre 0 e 255: "))
+            v3 = int(input("Enter Multiplier for Channel [BLUE] Between 0 and 255: "))
         
-        #JUNTA O RGB E MUDA A COR - VARIA DE 0 A 255
-        res = cv2.merge([canalAzul*v3, canalVerde*v2, canalVermelho*v1])
-
-        #Com a imagem do dado olhe esse parâmetro:
-        #res = cv2.merge([canalAzul*0, canalVerde*255, canalVermelho*0])
+        #JOIN THE BGR AND APPLIES MULTIPLICATION
+        res = cv2.merge([blueChannel*v3, greenChannel*v2, redChannel*v1])
         
-        #Junta A mascara Invertida e a area REcolorida
+        #Join: The Inverted mask and the REcolored area.
         final = cv2.add(res,res1)
-        #final = cv2.add(res,imagem)
-
+        #final = cv2.add(res,image)
+        
         temp = np.vstack([
-            np.hstack([t2, resO]),
+            np.hstack([t2, res0]),
             np.hstack([res, final]),
             ])
 
-        #temp1 = np.vstack([np.hstack([mask, mask_inv]),])
-        #cv2.imshow("Imagem ORIGINAL", imagem)
-        cv2.imshow("Quantidade de objetos: "+str(len(objetos)), temp)
+        #temp1 = np.vstack([np.hstack([mask, reverse_mask]),])
+        cv2.imshow("Original image: ", image)
+        cv2.imshow("Quantity of objects: "+str(len(objects)), temp)
         #cv2.imshow("MN", temp1)
         
         cv2.waitKey(0)
         cv2.destroyAllWindows
-        
 
-#Instâncias
-ulCor = ulColor()
-ulCor1 = ulColor()
-controle = Controle()
-controle.main()
+#Instances: 
+ulColor = ulColor()
+ulColor1 = ulColor()
+control = Control()
+control.main()

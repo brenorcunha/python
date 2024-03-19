@@ -63,7 +63,7 @@ for file in file_list:
             roi_gray = gray[y:y+h, x:x+w]
             roi_color = img[y:y+h, x:x+w]
 
-    print("Para a image "+ file +", foram encontradas {0} faces!".format(len(biggest)))
+    print("For the image "+ file +", were found {0} faces.".format(len(biggest)))
     #Displays the squared images
     cv2.imshow('img',img)
     cv2.waitKey(0)

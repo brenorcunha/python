@@ -5,7 +5,6 @@ class Pilha:
         print("Objeto será deletado")
     
 class Controle:
-    
     def __init__(self):
         self.topo = None
         self.aux = None
@@ -20,7 +19,6 @@ class Controle:
         5 - sair
         Digite a sua opção
         """
-
         opcao = int(input(txt))
         return opcao
     
@@ -35,11 +33,10 @@ class Controle:
                     break
                 else:
                     print("Opção inválida")
-                                
+
     def printpilhavazia(self):
         print("A pilha está vazia")
-                
-
+        
     def opcao1(self):
         novo = Pilha()
         novo.num = int(input("Digite o número a ser inserido na pilha: "))
@@ -55,16 +52,14 @@ class Controle:
             while self.aux is not None:
                 print(self.aux.num)
                 self.aux = self.aux.prox
-
+            
     def opcao3(self):
         if self.topo is None:
             self.printpilhavazia()
         else:
             print("A pilha contém elementos e o último elemento inserido será removido")
             self.topo = self.topo.prox
-            
         
-
     def opcao4(self):
         if self.topo is None:
             self.printpilhavazia()
@@ -80,8 +75,5 @@ class Controle:
                 self.aux = self.topo
                 
             print("Pilha esvaziada")
-
-    
-        
 controle = Controle()
 controle.main()

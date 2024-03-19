@@ -12,7 +12,7 @@ class Control:
     path1 = os.path.dirname(os.path.abspath(__file__)) +'\\positive'
     path2 = os.path.dirname(os.path.abspath(__file__)) +'\\negative'
     path3 = os.path.dirname(os.path.abspath(__file__)) +'\\Out'
-    maior = [] #Declaring variable to keep the best detection data.
+    bestClassifier = [] #Declaring variable to keep the best detection data.
     os.chdir(path)
     def menu(self):
         txt = """
@@ -40,7 +40,7 @@ class Control:
                   print("Invalid option!")
                   
     def option1(self):
-        maior = []
+        bestClassifier = []
         #loads a classifier from a file
         aux = 0
         aux1= 1
@@ -88,10 +88,10 @@ class Control:
                 if aux1 > aux:
                    aux = aux1
                    print ("Best result:",aux)
-                   maior = (classifier)
+                   bestClassifier = (classifier)
 				     
             #For each detected face: 
-            for (x, y, w, h) in maior:
+            for (x, y, w, h) in bestClassifier:
                 #Draw a rectangle (image, start position, end position, color, thickness)
                 frame = cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0), 2)
                 #time.sleep(0.3)
@@ -110,7 +110,7 @@ class Control:
         #path2 ../training/negative
         #path3 ../Out
         
-        maior = []
+        bestClassifier = []
         file_list = []
         file_list = search_folder(control.path,".jpg")
 
@@ -148,10 +148,10 @@ class Control:
                     if aux1 > aux:
                        aux = aux1
                        print ("Best result:",aux)
-                       maior = (classifier)
+                       bestClassifier = (classifier)
                        
                 #Put the squares in faces
-                for (x,y,w,h) in maior:
+                for (x,y,w,h) in bestClassifier:
                     cv2.rectangle(half,(x,y),(x+w,y+h),(255,0,0),2)
                     roi_gray = gray[y:y+h, x:x+w]
                     roi_color = half[y:y+h, x:x+w]
@@ -164,10 +164,10 @@ class Control:
                                       
                 if existe.exists() is True:
                     cv2.imshow('half',half)
-                    print("For the file "+file+", {0} faces were found!".format(len(maior)))
+                    print("For the file "+file+", {0} faces were found!".format(len(bestClassifier)))
                 else:
                     cv2.imshow('half',half)
-                    print("For the file "+file+", {0} faces were found!".format(len(maior)))
+                    print("For the file "+file+", {0} faces were found!".format(len(bestClassifier)))
                     cv2.imwrite(file,half)
                 
                 cv2.waitKey(0)
@@ -228,7 +228,7 @@ class Control:
                 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                             
                 #Classifying and setting classifiers: 
-                cascade = cascade_treinado.detectMultiScale(gray, 1.1, 5, minSize=(30,30))
+                cascade = trainedCascade.detectMultiScale(gray, 1.1, 5, minSize=(30,30))
                 
                 classifiers = [cascade]
 
@@ -271,7 +271,7 @@ class Control:
 #Establishes the face classifiers: 
 
 #Turn to the trained cascade: 
-cascade_treinado = cv2.CascadeClassifier('../haarcascades/cascade.xml')
+trainedCascade = cv2.CascadeClassifier('../haarcascades/cascade.xml')
 
 face_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_frontalface_default.xml')
 face_alt_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_frontalface_alt.xml')
@@ -299,13 +299,13 @@ def imageProcessing(path,file_list,tipo,size):
             #print("Echo!")
             pic_num+=1
     else:
-        print("[INFO] Pasta",tipo,"Vazia ")
+        print("[INFO] Folder ",tipo," is empty ")
 
 #Searching for files in folder: 
-def search_folder(diretorio,extensao):
+def search_folder(folder,extension):
     file_list = []
-    for file in os.listdir(diretorio):
-        if file.endswith(extensao):
+    for file in os.listdir(folder):
+        if file.endswith(extension):
             file_list.append(file)
             #print(file)
     return file_list
@@ -330,6 +330,5 @@ def positiveDescriptors():
                 with open('info.dat','a') as f:
                     f.write(line)
 
-        
 control = Control()
 control.main()

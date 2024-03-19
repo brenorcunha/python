@@ -5,7 +5,7 @@
 
 # Map character configuration
 wall = '#'
-hall = '.'
+corridor = '.'
 traversed = '='
 wrong = 'x'
 solution = '@'
@@ -83,38 +83,38 @@ class Maze(object):
 
                 if not find_it and \
                        valid_position( row, col + 1 ) and \
-                       self.map_[ row ][ col + 1 ] in ( hall, exit ):
-                    """Ainda não encontrou e
-                    a posição à direita é hall ou é a saída.
-                    Prossiga pela direita."""
+                       self.map_[ row ][ col + 1 ] in ( corridor, exit ):
+                    """Haven't found the exit yet and
+                    The position on the right is corridor or it's the exit.
+                    Proceed to the right."""
                     find_it = find_exit( row, col + 1 )
 
                 if not find_it and \
                        valid_position( row - 1, col ) and \
-                       self.map_[ row - 1 ][ col ] in ( hall, exit ):
-                    """Ainda não encontrou e
-                    a posição acima é hall ou é a saída.
-                    Prossiga para cima."""
+                       self.map_[ row - 1 ][ col ] in ( corridor, exit ):
+                    """Haven't found it yet and
+                    The above location is Corridor or is the exit.
+                    Proceed upwards."""
                     find_it = find_exit( row - 1, col )
 
                 if not find_it and \
                        valid_position( row, col - 1 ) and \
-                       self.map_[ row ][ col - 1 ] in ( hall, exit ):
-                    """Ainda não encontrou e
-                    a posição à esquerda é hall ou é a saída.
-                    Prossiga para esquerda."""
+                       self.map_[ row ][ col - 1 ] in ( corridor, exit ):
+                    """Haven't found it yet and
+                    The position on the left is Corridor or is the exit.
+                    Proceed to the left."""
                     find_it = find_exit( row, col - 1 )
 
                 if not find_it and \
                        valid_position( row + 1, col ) and \
-                       self.map_[ row + 1 ][ col ] in ( hall, exit ):
-                    """Ainda não encontrou e
-                    a posição abaixo é hall ou é a saída.
-                    Prossiga para baixo."""
+                       self.map_[ row + 1 ][ col ] in ( corridor, exit ):
+                    """Haven't found it yet and
+                    The position below is either runner or is the exit.
+                    Proceed down."""
                     find_it = find_exit( row + 1, col )
 
-                # Caso o caminho adotado foi correto, marque como solução
-                # senão marque como wrong
+                # If the path adopted was correct, mark it as 'solution'.
+                # Else, mark as 'wrong'.
                 if find_it:
                     self.map_[ row ][ col ] = solution
                 else:
@@ -125,9 +125,7 @@ class Maze(object):
         
         return find_exit( self.entrance[ 0 ], self.entrance[ 1 ] )
     # resolve()
-# Labirinto
 
-# Exemplo de uso:
 m = Maze()
 m.read_map(
     """
