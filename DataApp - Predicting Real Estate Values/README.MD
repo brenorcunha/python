@@ -5,7 +5,6 @@ In this project, you will evaluate the performance and estimation power of a mod
 
 The dataset for this project originates from the UCI Machine Learning repository (https://archive.ics.uci.edu/ml/datasets/Housing). Boston real estate data was collected in 1978 and each of the 489 entries represents aggregate data on 14 attributes for real estate from various suburbs of Boston. For the purpose of this project, the following preprocessing steps were done for this dataset:
 - 16 data observations have a ''MEDV'' value of 50.0. These notes likely contain **missing or censored values** and have been removed.
-- 1 data observation has an ''RM'' value of 8.78. This remark may be considered **aberrant** and has been removed.
 - The attributes ''RM'', ''LSTAT'', ''PTRATIO'', and ''MEDV'' are essential. The rest of the attributes are not very relevant.
 
 As a reminder, we're using three attributes from the Boston real estate dataset: 'RM'', ''LSTAT'' and ''PTRATIO''. For each data observation (neighborhood):
@@ -36,4 +35,4 @@ Just run in your favorite editor.
 
 The dataset used in this project is included with the scikit-learn library ([`sklearn.datasets.load_boston`](http://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_boston.html#sklearn.datasets.load_boston)). You do not have to download it separately. You can find more information on this dataset from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Housing) page.
 
-This project was made during the "Data Science Week" made in 2020 by MinerandoDados.
+#This project was made during the "Data Science Week" made in 2020 by MinerandoDados.
