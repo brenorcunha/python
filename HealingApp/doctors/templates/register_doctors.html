@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static '/users/css/users.css' %}">
+    <link rel="stylesheet" href="{% static '/doctors/css/register_doctors.css' %}">
+{% endblock 'head' %}
+
+{% block 'body' %}
+    <div class="container">
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-8">
+                <p class="p-bold">Hello, <span class="color-dark">{{request.user.username}}</span></p>
+                <p class="p-bold">Let's perform your legal doctor register. </p>
+                {% if messages %}
+                    <br>
+                    {% for message in messages %}
+                        <section class="alert {{message.tags}}">
+                            {{message}}
+                        </section>
+                    {% endfor %}
+                {% endif %}
+                <br>
+                <form action="{% url 'register_doctors.html' %}" method="post" enctype='multipart/form-data'> {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md">
+                            <label for="">CRM</label>
+                            <input type="text" class="form-control shadow-main-color" name="crm">
+                        </div>
+                        <div class="col-md">
+                            <label for="">Medical ID: </label>
+                            <input type="file" name="medicalID" class="form-control shadow-main-color">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md">
+                            <label for="">Full name: </label>
+                            <input type="text" name="name" placeholder="Type your full name" class="form-control shadow-main-color">
+                        </div>
+                        <div class="col-md">
+                            <label for="">CEP</label>
+                                <input type="text" name="cep" class="form-control shadow-main-color">
+                        </div>
+                    </div>
+                    <br>
+                    <label for="">Street: </label>
+                    <input type="text" name="street" class="form-control shadow-main-color" placeholder="Type your address">
+                    <br>
+                    <div class="row">
+                        <div class="col-md">
+                            <label for="">Neighborhood: </label>
+                            <input type="text" class="form-control shadow-main-color" name="neighborhood" placeholder="Type the neighborhood">
+                        </div>
+                        <div class="col-md">
+                            <label for="">Number: </label>
+                            <input type="number" class="form-control shadow-main-color" name="number">
+                        </div>
+                    </div>
+                    <br>
+                    <label for="">RG: </label>
+                    <input type="file" class="form-control shadow-main-color" name="rg">
+                    <br>
+                    <label for="">Profile photo: </label>
+                    <input type="file" class="form-control shadow-main-color" name="photo">
+                    <br>
+                    <label for="">Medical specialty: </label>
+                    <select type="text" class="form-select" name="specialty">
+                        {% for i in specialties %}
+                            <option value="{{i.id}}">{{i.specialty}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <label for="">Description: </label>
+                    <textarea name="description" class="form-control shadow-main-color" rows="10"></textarea>
+                    <br>
+                    <label for="">Appointment value: </label>
+                    <input type="number" class="form-control shadow-main-color" name="appointmentValue">
+                    <br>
+                    <input type="submit" value="Register" class="btn btn-success btn-dark-color">
+                </form>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
+{% endblock 'body' %}
