@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block 'head' %}
-    <link rel="stylesheet" href="{% static '/users/css/users.css' %}">
-    <link rel="stylesheet" href="{% static '/doctors/css/register_doctors.css' %}">
+    <link rel="stylesheet" href="/static/users/css/users.css">
+    <link rel="stylesheet" href="/static/doctors/css/register_doctors.css">
 {% endblock 'head' %}
 
 {% block 'body' %}
@@ -23,10 +23,10 @@
                     {% endfor %}
                 {% endif %}
                 <br>
-                <form action="{% url 'register_doctors.html' %}" method="post" enctype='multipart/form-data'> {% csrf_token %}
+                <form action="register_doctors" method="post" enctype='multipart/form-data'>{% csrf_token %}
                     <div class="row">
                         <div class="col-md">
-                            <label for="">CRM</label>
+                            <label for="">CRM: </label>
                             <input type="text" class="form-control shadow-main-color" name="crm">
                         </div>
                         <div class="col-md">
@@ -68,8 +68,8 @@
                     <br>
                     <label for="">Medical specialty: </label>
                     <select type="text" class="form-select" name="specialty">
-                        {% for i in specialties %}
-                            <option value="{{i.id}}">{{i.specialty}}</option>
+                        {% for specialty in specialties %}
+                            <option value="{{specialty.id}}">{{specialty}}</option>
                         {% endfor %}
                     </select>
                     <br>

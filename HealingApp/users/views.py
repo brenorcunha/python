@@ -5,7 +5,6 @@ from django.contrib.messages import constants
 from django.contrib import messages
 from django.contrib import auth
 
-# Create your views here.
 def register(request):
     #print(request.META) - Get request data.
     if request.method == "GET":
@@ -18,24 +17,28 @@ def register(request):
         #return HttpResponse(f'{username}-{email}-{password}') Get the inputs.
         if password != password_confirm:
             messages.add_message(request, constants.ERROR, "The passwords did not MATCH! ")
-            return redirect('/users/register')
+            return redirect('users/register')
         if len(password)<6:
             messages.add_message(request, constants.ERROR, "The password must have more than 6 digits. ")
-            return redirect('/users/register')
+            return redirect('users/register')
         #users = User.objects.all() Returns all the objs from BD
         users = User.objects.filter(username=username) # Returns only if this username already exists in the DB.
         print(users)
         if users.exists():
             messages.add_message(request, constants.ERROR, "User already exists in the DB!")
-            return redirect('/users/register')
+            return redirect('users/register')
         # Saving user in the DB: 
-        user = User.objects.create_user(
+        try:
+            user = User.objects.create_user(
             username=username,
             email=email,
             password=password
-        )
-        return redirect("/users/login/")
-        #return HttpResponse(f' User successfully created: {username}-{email}-{password}')
+            )
+            return redirect("users/login/")
+        except:
+            messages.add_message(request, constants.ERROR, "")
+            return redirect("users/register/")
+            #return HttpResponse(f' User successfully created: {username}-{email}-{password}')
         
 def login(request):
     if request.method=="GET":

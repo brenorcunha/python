@@ -1,9 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 # Create your models here.
 def isDoctor(user):
-    return drData.objects.filter(user==user).exists()
+    return drData.objects.filter(user=user).exists()
 class Specialties(models.Model):
     specialty = models.CharField(max_length=50)
     def __str__(self):
@@ -41,3 +42,17 @@ class drData(models.Model):
 """
 def __str__(self):
     return self.user.username
+
+@property
+def next_date(self):
+    next_date = openAgenda.objects.filter(user=self.user).filter(data__gt=datetime.now).filter(scheduled=False).order_by('date').first() #Getting all the available dates of appointment but ONLY FROM THE CURRENT DR.
+    #'data_gt' is an adavanced filter Greater than, we also have (lt=less than,lte=less or equal than, gte=greater or equal than)
+    return next_date
+# Function for the doctor open appointments:
+class openAgenda(models.Model):
+    date = models.DateTimeField()
+    userID = models.ForeignKey(User, on_delete=models.DO_NOTHING) #getting Doctor ID from DB.
+    scheduled = models.BooleanField(default=False) #For getting IF the 'hour' is already scheduled.
+    
+    def __str__(self):
+        return __str__(self.data)
