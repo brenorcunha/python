@@ -27,7 +27,7 @@
                 <br>
                 <p class="p-bold" style="font-size: 25px;"> Open agenda for appointments</p>
                 <hr>
-                <form action="open_agenda" method="post"> {% csrf_token %}
+                <form action="{% url 'doctors:open_agenda' %}" method="post"> {% csrf_token %}
                     <label for="">Choose date: </label>
                     <input type="datetime-local" name="date" class="form-control shadow-main-color">
                     <br>

@@ -23,7 +23,7 @@
                     {% endfor %}
                 {% endif %}
                 <br>
-                <form action="register_doctors" method="post" enctype='multipart/form-data'>{% csrf_token %}
+                <form action="{% url 'doctors:register_doctors' %}" method="post" enctype='multipart/form-data'>{% csrf_token %}
                     <div class="row">
                         <div class="col-md">
                             <label for="">CRM: </label>

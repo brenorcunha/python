@@ -16,7 +16,7 @@
       <p style="font-size: 25px" class="p-bold">
         Hello, <span class="color-dark">{{request.user.username}}.</span>
       </p>
-      <form action="home" post="GET">
+      <form action="{% url 'patients:home' %}" post="GET">
         <input
           type="text"
           class="form-control shadow-main-color"
@@ -64,7 +64,7 @@
                 {% else %}
                     Keep waiting. There are no available dates now.
                 {% endif %}
-                <a href="#" class="btn btn-success btn-dark-color">Schedule</a>
+                <a href="/patients/make_schedule/{{doctor.id}}" class="btn btn-success btn-dark-color">Schedule</a>
             </p>
             </div>
 
@@ -77,8 +77,9 @@
       <p class="bg-main-lembrete">
         <span class="p-bold"
           ><i class="bi bi-exclamation-triangle-fill icon-differential"></i
-          >&nbsp;&nbsp; Appointment with Dr. {{doctor.name}} in a week.</span
+          >&nbsp;&nbsp; Appointment with Dr. {{doctor.name}} in "{a week}".</span
         >
+        <!-- Implemente os lembretes com Django. -->>
       </p>
     </div>
   </div>

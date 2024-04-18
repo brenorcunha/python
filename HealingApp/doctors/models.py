@@ -7,6 +7,8 @@ def isDoctor(user):
     return drData.objects.filter(user=user).exists()
 class Specialties(models.Model):
     specialty = models.CharField(max_length=50)
+    icon = models.ImageField(upload_to="icons", null=True, blank=True)
+    
     def __str__(self):
         return self.specialty
     
@@ -30,22 +32,23 @@ class drData(models.Model):
     rg = models.ImageField(upload_to='rgs')
     medicalID = models.ImageField(upload_to='mid')
     photo = models.ImageField(upload_to='photos')
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     appointmentValue = models.FloatField(default=100)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     specialty = models.ForeignKey(Specialties, on_delete=models.DO_NOTHING)
     
-""""
- After creating this class, with the rg (brazilian ID) we have to store an image or a PDF. Query at 'settings;py'
- the following parameters (MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  & MEDIA_URL = '/media/').
- In programming, wWE DON'T INSERT IMAGES OR PDF's in the DB, we upload to a specific folder & refers to it in the table.
-"""
-def __str__(self):
-    return self.user.username
+    def __str__(self):
+        return self.user.username
+    
+    """"
+    After creating this class, with the rg (brazilian ID) we have to store an image or a PDF. Query at 'settings;py'
+    the following parameters (MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  & MEDIA_URL = '/media/').
+    In programming, wWE DON'T INSERT IMAGES OR PDF's in the DB, we upload to a specific folder & refers to it in the table.
+    """
 
 @property
 def next_date(self):
-    next_date = openAgenda.objects.filter(user=self.user).filter(data__gt=datetime.now).filter(scheduled=False).order_by('date').first() #Getting all the available dates of appointment but ONLY FROM THE CURRENT DR.
+    next_date = openAgenda.objects.filter(user=self.user).filter(date__gt=datetime.now).filter(scheduled=False).order_by('date').first() #Getting all the available dates of appointment but ONLY FROM THE CURRENT DR.
     #'data_gt' is an adavanced filter Greater than, we also have (lt=less than,lte=less or equal than, gte=greater or equal than)
     return next_date
 # Function for the doctor open appointments:
@@ -55,4 +58,4 @@ class openAgenda(models.Model):
     scheduled = models.BooleanField(default=False) #For getting IF the 'hour' is already scheduled.
     
     def __str__(self):
-        return __str__(self.data)
+        return str(self.date)

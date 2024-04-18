@@ -4,7 +4,8 @@ from .models import Specialties, drData, isDoctor,openAgenda
 from django.http.response import HttpResponse
 from django.contrib import messages
 from django.contrib.messages import constants
-from datetime import datetime
+from datetime import datetime, timedelta
+from patients.models import Appointment
 
 @login_required
 # Create your views here.
@@ -67,7 +68,7 @@ def open_agenda(request):
         return render(request, 'open_agenda.html', {'Doctor data: ', dr_data, 'Open agenda:', open_agenda})
     elif request.method=="POST":
         date = request.post.get('date')
-        #Formating data with datetime library, another way is awful to use!
+        #Formating date with datetime library, another way is awful to use!
         formatted_date = datetime.strptime(date, '%Y-%m-%dT%H:%M')
         if formatted_date <= datetime.now():
             messages.add_message(request, constants.WARNING, " The date cannot earlier than today.")
@@ -81,4 +82,12 @@ def open_agenda(request):
         appointment_open.save()
         messages.add_message(request, constants.SUCCESS, "Appointment shceduled successfully!")
         return redirect('doctors/open_agenda')
-        
+
+def appointments_dr(request):
+    if not isDoctor(request.user):
+        messages.add_message(request, constants.WARNING, "Only doctors can open agenda!")
+        today = datetime.now().date()
+        #The line says: Today appointments = filter(doctor=logged doctor) filter (Opened appointments are from tpday or tomorrow (today+1 day)): 
+        appointments_today = Appointment.objects.filter(open_agenda__user=request.user).filter(open_agenda__date__gte=today).filter(open_agenda__date__lt= today + timedelta(days=1))
+        rem_appointments = Appointment.objects.exclude(id__in=appointments_today.values('id')) #Don't show the earlier appointments.
+        return (request, 'appointments_dr.html', {'appointments_today:', appointments_today, 'rem_appointments: ', rem_appointments} )
