@@ -20,10 +20,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # Include libray: For adding the route that sends to 'users' miniApp.
-app_name='healingApp'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls'), name='users'),
     path('doctors/', include('doctors.urls'), name='doctors'),
-    path('patients/', include('patients.urls'), name='patients')
+    path('patients/', include('patients.urls'), name='patients'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

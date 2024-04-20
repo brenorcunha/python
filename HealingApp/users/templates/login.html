@@ -1,8 +1,7 @@
 {% extends 'base.html' %} {% load static %} {% block 'head' %}
 <link rel="stylesheet" href="/static/users/css/users.css" />
 
-{% endblock 'head' %} 
-{% block 'body' %}
+{% endblock 'head' %} {% block 'body' %}
 <div class="container-fluid">
   <div class="row">
     <div class="col-md d-flex justify-content-center">
@@ -15,7 +14,7 @@
         </section>
         <hr />
 
-        <form action="{% url 'patients:home' %}" method="POST">
+        <form action="{% url 'home' %}" method="POST">
           {% csrf_token %}
           <h2 class="fonte-destaque1">Login</h2>
           {% if messages %}
@@ -56,8 +55,7 @@
     <div
       class="col-md bg-main d-flex justify-content-center align-items-center"
     >
-      
-      <img src="{% static 'users/img/ilustracao.png' %}" alt="">
+      <img src="{% static 'users/img/ilustracao.png' %}" alt="" />
     </div>
   </div>
 </div>

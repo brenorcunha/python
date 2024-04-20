@@ -1,6 +1,5 @@
-{% extends "base.html" %}
-{% block 'head' %}
-    <link rel="stylesheet" href="/static/users/css/users.css">
+{% extends "base.html" %} {% block 'head' %}
+<link rel="stylesheet" href="/static/users/css/users.css" />
 {% endblock 'head' %}
 <!--This page extends the base.html-->
 {% block 'body' %}
@@ -8,25 +7,24 @@
   <div class="row">
     <div class="col-md d-flex justify-content-center">
       <div class="cont-cadastro">
+        patients
         <br />
         <br />
         <section class="cont-logo">
           <img src="/static/general/img/logo.png" alt="Logo" class="logo" />
-          
+
           <label class="text-logo">Healing</label>
         </section>
         <hr />
 
-        <form action="{% url 'users:register' %}" method="POST"> {% csrf_token %}
+        <form action="{% url 'register' %}" method="POST">
+          {% csrf_token %}
           <h2 class="fonte-destaque1">Register</h2>
           {% if messages %}
-            <br />
-            {% for message in messages %}
-              <section class="alert {{message.tags}}">
-                {{message}}
-              </section>
-            {% endfor %}
-          {% endif%}
+          <br />
+          {% for message in messages %}
+          <section class="alert {{message.tags}}">{{message}}</section>
+          {% endfor %} {% endif%}
           <br />
           <label for="username">Username: </label>
           <input
@@ -76,15 +74,15 @@
             class="btn btn-success btn-dark-color"
           />
           <a href="login" class="btn btn-dark-color-outline">
-            I just have an account.</a>
+            I just have an account.</a
+          >
         </form>
       </div>
-
     </div>
     <div
       class="col-md bg-main d-flex justify-content-center align-items-center"
     >
-      <img src="/static/users/img/ilustracao.png" alt="">
+      <img src="/static/users/img/ilustracao.png" alt="" />
     </div>
   </div>
 </div>

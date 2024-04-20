@@ -12,7 +12,7 @@
 {% endblock 'head' %}
 
 {% block 'body' %}
-
+    {% include 'partials/navbar.hmtl' %}
     <div class="container">
         <br>
         {% if messages %}
@@ -54,7 +54,7 @@
                 <tbody>
                     {% for appointment in appointments_today  %}
                         <tr>
-                            <td><a href="">{{appointment.patient}}</a></td>
+                            <td><a href="{% url 'appointments_dr_area' appointment.id %}">{{appointment.patient}}</a></td>
                             <td>{{appointment.get_status_display}}</td>
                             <td>{{appointment.data_aberta.data}}</td>
                         </tr>
@@ -67,7 +67,7 @@
         <hr>
         
 
-        <h2><span class="color-dark">Restantes</span></h2>
+        <h2><span class="color-dark">Remaining</span></h2>
         <div class="list-minhas-consultas">
             <table class="table">
                 <thead>
@@ -78,11 +78,11 @@
                   </tr>
                 </thead>
                 <tbody>
-                    {% for consulta in consultas_restantes  %}
+                    {% for appointment in remaining_appointments  %}
                         <tr>
-                            <td><a href="">{{appointment.patient}}</a></td>
+                            <td><a href="{% url 'appointments_dr_area' appointment.id %}">{{appointment.patient}}</a></td>
                             <td>{{appointment.get_status_display}}</td>
-                            <td>{{appointment.data_aberta.data}}</td>
+                            <td>{{appointment.open_agenda.date}}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

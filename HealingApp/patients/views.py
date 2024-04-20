@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
-from doctors.models import drData, Specialties, openAgenda
+from doctors.models import drData, Specialties, openAgenda, isDoctor
 from datetime import datetime
-from .models import Appointment
+from .models import Appointment, Document
 from django.contrib import messages
 from django.contrib.messages import constants
 
 def home(request):
     if request.method=="GET":
-        doctor_filter = request.GET.get('medico')
-        specialties_filter = request.GET.getlist('especialidades')
+        doctor_filter = request.GET.get('doctor')
+        specialties_filter = request.GET.getlist('specialties')
         
         doctors = drData.objects.all()
         
@@ -18,13 +18,14 @@ def home(request):
             doctors = doctors.filter(specialty_id__in=specialties_filter)
         
         specialties = Specialties.objects.all()
-        return render(request, 'home.html', {'Doctors:', doctors, 'Specialties: ', specialties })
+        return render(request, 'home.html', {'Doctors': doctors, 'Specialties': specialties, 'isDoctor': isDoctor(request.user) })
+
 #id_make_schedule is the doctor ID for getting his agenda.
 def make_schedule(request, id_make_schedule):
     if request.method=="GET":
         doctor = drData.objects.get(id=id_make_schedule)
-        open_agenda = openAgenda.objects.filter(user=doctor.user).filter(openAgenda.date__gtm >=datetime.now).filter(scheduled=False)
-        return render(request, 'make_schedule.html', {'Doctor: ', doctor, 'Open schedules: ', open_agenda})
+        open_agenda = openAgenda.objects.filter(user=doctor.user).filter(openAgenda.date__gtm >=datetime.now()).filter(scheduled=False)
+        return render(request, 'make_schedule.html', {'Doctor': doctor, 'Open schedules': open_agenda, 'isDoctor': isDoctor(request.user)})
 # TAREFA: Pesquise sobre o conceito de atomicidade em BD's, no caso abaixo, seria para
 #que não salvasse os efeitos do método abaixo, a não ser que ele tenha sido completamente concluído.
 #salvar parcialmente, n caso de uma queda de enrgia, corromperia a operação.
@@ -41,8 +42,36 @@ def open_agenda(request, id_open_agenda):
         messages.add_message(request, constants.SUCCESS, "Appointment successfully scheduled!")
     return redirect('/patients/my_appointments')
 
+#Estas 2 funções podem estar invertidas, caso erro verifique: 
+def make_appointment(request, id_appointment):
+    appointment = Appointment.objects.get(id=id_appointment)
+    #using the 'open_agenda' attribute from doctor's view to get it's name: 
+    dr_data = drData.objects.get(user=Appointment.open_agenda.user)
+    documents = Document.objects.filter(appointment=appointment)
+    return render(request, 'make_appointment.html', {'Appointment': appointment, 'Doctor data ': dr_data, 'Documents ': documents})
+
 def my_appointments(request):
-    #TAREFA: Realizar filtros: Ao user inserir especialidade médica e data, ao clicar em 'Filtrar'
-    #(Linha 31 do my_appointments.html, criar as funções para que retorne os resultados corretamente).
-    my_appointments = Appointment.objects.filter(patient=request.user).filter(open_agenda__date__gde=datetime.now)
-    return render('request, my_appointments.html',{'My appointments:', my_appointments})
+    if request.method=="GET":
+        #TAREFA: Realizar filtros: Ao user inserir especialidade médica e data, ao clicar em 'Filtrar'
+        #(Linha 31 do my_appointments.html, criar as funções para que retorne os resultados corretamente).
+        my_appointments = Appointment.objects.filter(patient=request.user).filter(open_agenda__date__gde=datetime.now())
+    
+    return render(request, 'my_appointments.html',{'My appointments': my_appointments, 'isDoctor': isDoctor(request.user)})
+
+def exclude_appointment(request, id_appointment):
+    appointment=Appointment.objects.get(id=id_appointment)
+    if request.username!=appointment.patient.username: 
+        #IF is NOT the correct user, the owner:
+        messages.add_message(request, constants.WARNING, "Only doctors can open agenda!")
+        return redirect('/my_appointments/')
+    else:
+        appointment.status='F' #Get finished appointments
+        appointment.delete()#Delete required appointment
+        appointment.save() #Save it to the DB.
+        return redirect('/my_appointments/')
+    
+"""
+TAREFA: Fazer validação de segurança nos demais campos aplicáveis ('Algum usuário tem acesso algo
+que não poderia?)
+- Botão de cancelar consulta.
+"""

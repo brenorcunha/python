@@ -12,7 +12,7 @@
 {% endblock 'head' %}
 
 {% block 'body' %}
-
+    {% include 'partials/navbar.hmtl' %}
     <div class="container">
         <br>
         {% for message in messages %}
@@ -51,7 +51,7 @@
                 <tbody>
                     {% for appointment in appointments_today  %}
                         <tr>
-                            <td><a href="#">Dr(a). {{appointment.open_agenda.user}}</a></td>
+                            <td><a href="{% url 'appointment' appointment.id %}>Dr(a). {{appointment.open_agenda.user}}</a></td>
                             <td>{{appointment.get_status_display}}</td>appointments_today
                             <td>{{appointment.open_agenda.date}}</td>
                         </tr>
