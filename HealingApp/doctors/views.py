@@ -5,7 +5,7 @@ from django.http.response import HttpResponse
 from django.contrib import messages
 from django.contrib.messages import constants
 from datetime import datetime, timedelta
-from patients.models import Appointment, Document
+from patients.models import Appointment, Document, User
 
 @login_required
 # Create your views here.
@@ -14,7 +14,7 @@ def register_doctors(request):
     dataLogged = drData.objects.filter(user=request.user)
     if dataLogged.exists():
         messages.add_message(request, constants.WARNING, "You cannot access this page.")
-        return redirect('doctors/open_agenda.html')
+        return redirect('/doctors/open_agenda')
     if request.method=="GET":
         specialties = Specialties.objects.all() #Getting data from DB. In this case, all data (fields).
         return render(request, 'register_doctors.html', {'specialties': specialties, 'isDoctor': isDoctor(request.user)})
@@ -53,35 +53,35 @@ def register_doctors(request):
         dr_data.save()
         
         messages.add_message(request, constants.SUCCESS, "Doctor registered successfully!")
-        return redirect("doctors/open_agenda")
+        return redirect("/doctors/open_agenda")
     
 @login_required
 def open_agenda(request):
     if not isDoctor(request.user):
         messages.add_message(request, constants.WARNING, "Only doctors can open agenda!")
-        return redirect('users/logout')
-    
-    if request.method == "GET":
+        return redirect("/users/logout")
+    elif request.method == "GET":
         dr_data = drData.objects.get(user=request.user)
-        open_agenda = openAgenda.objects.filter(user=request.user)
+        open_agenda = openAgenda.objects.filter(id=request.user.id)
         
         return render(request, 'open_agenda.html', {'Doctor data': dr_data, 'Open agenda': open_agenda, 'isDoctor': isDoctor(request.user)})
     elif request.method=="POST":
-        date = request.post.get('date')
+        date = request.POST.get('date')
+        userID = User.objects.get(id)
         #Formating date with datetime library, another way is awful to use!
         formatted_date = datetime.strptime(date, '%Y-%m-%dT%H:%M')
         if formatted_date <= datetime.now():
             messages.add_message(request, constants.WARNING, " The date cannot earlier than today.")
-            return("doctors/open_agenda")
+            return("/doctors/open_agenda")
         
         appointment_open=openAgenda(
-            date=date,
-            user=request.user,
-            
-        ) 
+            date=formatted_date,
+            userID=userID,
+            scheduled = True
+        )
         appointment_open.save()
         messages.add_message(request, constants.SUCCESS, "Appointment shceduled successfully!")
-        return redirect('doctors/open_agenda')
+        return redirect('/doctors/open_agenda')
 
 def appointments_dr(request):
     if not isDoctor(request.user):
@@ -106,7 +106,7 @@ def appointments_dr_area(request, id_appointment):
             messages.add_message(request, constants.WARNING, "Consultation already CANCELED! No operations available.")
             return redirect(f'doctors/appointment_dr_area/{id_appointment}')
         elif appointment.status == 'F':
-            messages.add_message(request, constants.WARNING, "Consultation already FINISHED! Nooperations available.")
+            messages.add_message(request, constants.WARNING, "Consultation already FINISHED! No operations available.")
             return redirect(f'doctors/appointment_dr_area/{id_appointment}')
         appointment.link =link
         appointment.status = 'S'
@@ -119,7 +119,7 @@ def finish_appointment(request, id_appointment):
         return redirect('/users/logout')
     
     appointment=Appointment.objects.get(id=id_appointment)
-    # DEFENSIVE CODE: Verifying if the user loggedis the doctor rsponsaible for the appointment, if NOT, do not allow!
+    # DEFENSIVE CODE: Verifying if the user logged is the doctor rsponsaible for the appointment, if NOT, do not allow!
     if request.user!=appointment.open_agenda.user:
         messages.add_message(request, constants.ERROR, "You cannot finish this appointment!")
         return redirect(f'doctors/open_agenda') #Take the user back to the page.

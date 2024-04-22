@@ -14,8 +14,7 @@
         </section>
         <hr />
 
-        <form action="{% url 'home' %}" method="POST">
-          {% csrf_token %}
+        <form action="{% url 'login' %}" method="POST">{% csrf_token %}
           <h2 class="fonte-destaque1">Login</h2>
           {% if messages %}
           <br />
@@ -29,7 +28,7 @@
             name="username"
             id=""
             class="form-control"
-            placeholder="Username ..."
+            placeholder="Type your username"
           />
           <br />
 
@@ -46,7 +45,7 @@
             value="Login"
             class="btn btn-success btn-dark-color"
           />
-          <a href="./register" class="btn btn-dark-color-outline"
+          <a href="{% url 'register' %}" class="btn btn-dark-color-outline"
             >I don't have an account.</a
           >
         </form>

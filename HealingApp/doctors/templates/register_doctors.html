@@ -7,6 +7,7 @@
 {% endblock 'head' %}
 
 {% block 'body' %}
+{% include 'partial/navbar.html' %}
     <div class="container">
         <br>
         <br>
@@ -23,7 +24,7 @@
                     {% endfor %}
                 {% endif %}
                 <br>
-                <form action="{% url 'doctors:register_doctors' %}" method="post" enctype='multipart/form-data'>{% csrf_token %}
+                <form action="{% url 'register_doctors' %}" method="post" enctype='multipart/form-data'>{% csrf_token %}
                     <div class="row">
                         <div class="col-md">
                             <label for="">CRM: </label>

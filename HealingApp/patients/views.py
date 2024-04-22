@@ -18,10 +18,12 @@ def home(request):
             doctors = doctors.filter(specialty_id__in=specialties_filter)
         
         specialties = Specialties.objects.all()
-        return render(request, 'home.html', {'Doctors': doctors, 'Specialties': specialties, 'isDoctor': isDoctor(request.user) })
+        return render(request, "home.html", {'Doctors': doctors, 'Specialties': specialties, 
+                                             'isDoctor': isDoctor(request.user) })
 
-#id_make_schedule is the doctor ID for getting his agenda.
+
 def make_schedule(request, id_make_schedule):
+    #id_make_schedule is the doctor ID for getting his agenda.
     if request.method=="GET":
         doctor = drData.objects.get(id=id_make_schedule)
         open_agenda = openAgenda.objects.filter(user=doctor.user).filter(openAgenda.date__gtm >=datetime.now()).filter(scheduled=False)
@@ -52,7 +54,9 @@ def make_appointment(request, id_appointment):
 
 def my_appointments(request):
     if request.method=="GET":
-        #TAREFA: Realizar filtros: Ao user inserir especialidade médica e data, ao clicar em 'Filtrar'
+        #TAREFA: Realizar filtros: Ao user inserir especialidade médica e data, ao clicar em 'Filtrar':
+        specialty = request.GET.get('medial_specialties')
+        appointment_date = request.GET.get('appointment_date')
         #(Linha 31 do my_appointments.html, criar as funções para que retorne os resultados corretamente).
         my_appointments = Appointment.objects.filter(patient=request.user).filter(open_agenda__date__gde=datetime.now())
     

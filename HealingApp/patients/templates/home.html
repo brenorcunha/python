@@ -1,46 +1,45 @@
 {% extends 'base.html' %} {% load static %} {% block 'head' %}
-<link rel="stylesheet" href="/static/doctors/css/open_agenda.css" />
-<link rel="stylesheet" href="/static/users/css/users.css" />
-<link rel="stylesheet" href="/static/doctors/css/doctors_register.css" />
-<link rel="stylesheet" href="/static/patients/css/home.css" />
+<link rel="stylesheet" href="{% static '/doctors/css/open_agenda.css' %}" />
+<link rel="stylesheet" href="{% static '/users/css/users.css' %}" />
+<link rel="stylesheet" href="{% static '/doctors/css/doctors_register.css' %}" />
+<link rel="stylesheet" href="{% static '/patients/css/home.css' %}" />
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
 />
 {% endblock 'head' %} {% block 'body' %}
-{% include 'partials/navbar.hmtl' %}
+{% include 'partial/navbar.html' %}
 <br /><br />
 <div class="container">
   <div class="row">
     <div class="col-md-8">
         
       <p style="font-size: 25px" class="p-bold">
-        Hello, <span class="color-dark">{{request.user.username}}.</span>
+        Hello, <span class="color-dark">{{request.user.username}}. </span>
       </p>
         <form action="{% url 'home' %}" method="GET">
-        <input
-          type="text"
-          class="form-control shadow-main-color"
-          placeholder="Search for doctors" 
-          name="medico"
-        />
-        <br />
-        <div class="especialidades">
-          {% for specialty in specialties %}
-            <input type="checkbox" name=" " value="specialty.id" />
-            <span class="badge bg-secondary">
-              {{specialty.specialty}}
-            </span>
-          {% endfor %}
-        </div>
-        {% endfor %}
-        <br />
-        <input
-          type="submit"
-          value="filter"
-          class="btn btn-success btn-dark-color"
-        />
-      </form>
+          <input
+            type="text"
+            class="form-control shadow-main-color"
+            placeholder="Search for doctors" 
+            name="doctor"
+          />
+          <br />
+          <div class="specialties">
+            {% for specialty in specialties %}
+              <input type="checkbox" name=" " value="specialty.id" />
+              <span class="badge bg-secondary">
+                {{specialty.specialty}}
+              </span>
+            {% endfor %}
+          </div>
+          <br />
+          <input
+            type="submit"
+            value="filter"
+            class="btn btn-success btn-dark-color"
+          />
+        </form>
       <hr />
       <div class="list-medicos">
         {% for doctor in doctors %}
@@ -59,8 +58,7 @@
                 </div>
             </div>
             <p><i class="bi bi-map icon-main"></i>&nbsp;&nbsp;{{doctor.street}}</p>
-            <p>
-                <i class="bi bi-calendar2-week icon-main"></i>&nbsp;&nbsp; Next available date: 
+            <p><i class="bi bi-calendar2-week icon-main"></i>&nbsp;&nbsp; Next available date: 
                 {% if doctors.next_date %}
                     {{doctors.next_date}}
                 {% else %}
@@ -79,9 +77,10 @@
       <p class="bg-main-lembrete">
         <span class="p-bold"
           ><i class="bi bi-exclamation-triangle-fill icon-differential"></i
-          >&nbsp;&nbsp; Appointment with Dr. {{doctor.name}} in "{a week}".</span
+          >&nbsp;&nbsp; Appointment with Dr. {{doctor.name}} in a week.</span
         >
-        <!-- TAREFA: Implemente os lembretes com Django. -->>
+        <!-- TAREFA: Implemente os lembretes com Django. -->
+      </p>
       </p>
     </div>
   </div>
