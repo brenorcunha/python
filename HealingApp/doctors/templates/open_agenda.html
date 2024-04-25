@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-md-8">
                 
-                <img src="{{dr_data.photo.url}}" alt="" class="foto-perfil">
+                <img src="{{dr_data.photo}}" alt="" class="foto-perfil">
                 <label for="" style="margin-left: 30px; font-size: 25px;" class="p-bold"> Hello, <span class="color-dark">{{request.user.username}}</span></label>
 
                 <br>
@@ -28,7 +28,7 @@
                 <br>
                 <p class="p-bold" style="font-size: 25px;"> Open agenda for appointments</p>
                 <hr>
-                <form action="{% url 'open_agenda' %}" method="post"> {% csrf_token %}
+                <form action="{% url 'open_agenda' %}" method="POST"> {% csrf_token %}
                     <label for="">Choose date: </label>
                     <input type="datetime-local" name="date" id="date" class="form-control shadow-main-color">
                     <br>

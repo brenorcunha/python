@@ -103,6 +103,12 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+#ADDED to make auth work: [!!!!!!!!!!!!!!]
+PASSWORD_HASHES= [
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contri.auth.hashers.Argon2PasswordHasher',
+]
 
 
 # Internationalization

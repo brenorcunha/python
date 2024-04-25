@@ -47,15 +47,16 @@ class drData(models.Model):
     In programming, wWE DON'T INSERT IMAGES OR PDF's in the DB, we upload to a specific folder & refers to it in the table.
     """
 
-@property
-def next_date(self):
-    next_date = openAgenda.objects.filter(user=self.user).filter(date__gt=datetime.now()).filter(scheduled=False).order_by('date').first() #Getting all the available dates of appointment but ONLY FROM THE CURRENT DR.
-    #'data_gt' is an adavanced filter Greater than, we also have (lt=less than,lte=less or equal than, gte=greater or equal than)
-    return next_date
+    @property
+    def next_date(self):
+        next_date = openAgenda.objects.filter(user=self.user).filter(date__gt=datetime.now()).filter(scheduled=False).order_by('date').first() #Getting all the available dates of appointment but ONLY FROM THE CURRENT DR.
+        #'data_gt' is an adavanced filter Greater than, we also have (lt=less than,lte=less or equal than, gte=greater or equal than)
+        return next_date
 
 class openAgenda(models.Model):
     date = models.DateTimeField()
-    userID = models.ForeignKey(User, on_delete=models.DO_NOTHING) #getting Doctor ID from DB.
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING) #getting Doctor ID from DB.
     scheduled = models.BooleanField(default=False) #For getting IF the 'hour' is already scheduled.
+    
     def __str__(self):
         return str(self.date)

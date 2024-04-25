@@ -1,7 +1,7 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-color-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#"><img src="{% static 'general/img/logo.png' %}" width="20%" alt="">&nbsp;Healing</a>
+      <a href="{% if not isDoctor %} {% url 'home' %} {% else %} {% url 'open_agenda' %} {% endif %}" class="navbar-brand" href="#"><img src="{% static 'general/img/logo.png' %}" width="20%" alt="">&nbsp;Healing</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
