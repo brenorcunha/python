@@ -13,8 +13,8 @@
         <div class="row">
             <div class="col-md-8">
                 
-                <img src="{{dr_data.photo}}" alt="" class="foto-perfil">
-                <label for="" style="margin-left: 30px; font-size: 25px;" class="p-bold"> Hello, <span class="color-dark">{{request.user.username}}</span></label>
+                <img src="{{dr_data.photo.url}}" alt="" class="foto-perfil">
+                <label for="" style="margin-left: 30px; font-size: 25px;" class="p-bold"> Hello, Dr. <span class="color-dark">{{dr_data.name}}</span></label>
 
                 <br>
                 {% if messages %}

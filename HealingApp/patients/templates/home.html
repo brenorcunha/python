@@ -23,11 +23,12 @@
             class="form-control shadow-main-color"
             placeholder="Search for doctors" 
             name="doctor"
+            id="doctor"
           />
           <br />
           <div class="specialties">
             {% for specialty in specialties %}
-              <input type="checkbox" name=" " value="specialty.id" />
+              <input type="checkbox" name="specialties" value="{{specialty.id}}" />
               <span class="badge bg-secondary">
                 {{specialty.specialty}}
               </span>
@@ -36,52 +37,54 @@
           <br />
           <input
             type="submit"
-            value="filter"
+            value="Filter"
             class="btn btn-success btn-dark-color"
           />
         </form>
       <hr />
       <div class="list-medicos">
-        {% for doctor in doctors %}
-            <div class="card-medicos shadow-main-color">
-            <div class="row">
 
-                <div class="col-md-3">
-                <img src="{{doctor.photo.url}}" class="foto-perfil-card" alt="" />
-                </div>
-                <div class="col-md">
-                <p style="font-size: 20px" class="p-bold">
-                    Dr. {{doctor.name}}
-                    <i class="bi bi-patch-check-fill icon-main"></i>
-                </p>
-                <p>{{doctor.description}}</p>
-                </div>
+      {% for doctor in doctors %}
+        <div class="card-medicos shadow-main-color">
+          <div class="row">
+            <div class="col-md-3">
+              <img src="{{doctor.photo.url}}" class="foto-perfil-card" alt="" />
+              </div>
+              <div class="col-md">
+              <p style="font-size: 20px" class="p-bold">
+                  Dr. {{doctor.name}}
+                  <i class="bi bi-patch-check-fill icon-main"></i>
+              </p>
+              <p>{{doctors.description}}</p>
+              </div>
             </div>
             <p><i class="bi bi-map icon-main"></i>&nbsp;&nbsp;{{doctor.street}}</p>
-            <p><i class="bi bi-calendar2-week icon-main"></i>&nbsp;&nbsp; Next available date: 
-                {% if doctors.next_date %}
-                    {{doctors.next_date}}
+            <p><i class="bi bi-calendar2-week icon-main"></i>&nbsp;&nbsp; Next available date: </p>
+
+                {% if doctor.next_date %}
+                    {{doctor.next_date}}
                 {% else %}
                     Keep waiting. There are no available dates now.
                 {% endif %}
-                <a href="/patients/make_schedule/{{doctor.id}}" class="btn btn-success btn-dark-color">Schedule</a>
-            </p>
-            </div>
 
-            <br />
-        {% endfor %}
+                <br />
+            <a href="{% url 'make_schedule' doctor.id %}" class="btn btn-success btn-dark-color">Schedule</a>
+            
+          </div>
+
+          <br />
+      {% endfor %}
       </div>
     </div>
     <div class="col-md-4">
       <p style="font-size: 25px" class="p-bold">Reminders</p>
       <p class="bg-main-lembrete">
-        <span class="p-bold"
-          ><i class="bi bi-exclamation-triangle-fill icon-differential"></i
-          >&nbsp;&nbsp; Appointment with Dr. {{doctor.name}} in a week.</span
-        >
-        <!-- TAREFA: Implemente os lembretes com Django. -->
+        {% for appointment in appointments_today %}
+        <span class="p-bold"><i class="bi bi-exclamation-triangle-fill icon-differential"></i
+        >&nbsp;&nbsp; Appointment with Dr. {{doctor.name}} in {{appointment.date}}.</span>
+        {% endfor %}
       </p>
-      </p>
+      </p>  
     </div>
   </div>
 </div>

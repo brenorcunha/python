@@ -1,3 +1,4 @@
+from itertools import count
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Specialties, drData, isDoctor,openAgenda
@@ -64,11 +65,11 @@ def open_agenda(request):
         dr_data = drData.objects.get(user=request.user)
         open_agenda = openAgenda.objects.filter(user=request.user)
         
-        return render(request, 'open_agenda.html', {'Doctor data': dr_data, 'Open agenda': open_agenda, 'isDoctor': isDoctor(request.user)})
+        return render(request, 'open_agenda.html', {'dr_data': dr_data, 'open_agenda': open_agenda, 'isDoctor': isDoctor(request.user)})
     elif request.method=="POST":
         date = request.POST.get('date')
         #Formating date with datetime library, another way is awful to use!
-        formatted_date = datetime.strptime(date, '%Y-%m-%dT%H:%M')
+        formatted_date = datetime.strptime(date, 'd/%m/%YdT%H:%M')
         if formatted_date <= datetime.now():
             messages.add_message(request, constants.WARNING, ' The date cannot earlier than today.')
             return redirect('/doctors/open_agenda')
@@ -79,25 +80,30 @@ def open_agenda(request):
             scheduled = True
         )
         new_appointment.save()
+        
         messages.add_message(request, constants.SUCCESS, 'Appointment shceduled successfully!')
         return redirect('/doctors/open_agenda')
-#consultas_medico
+    
+@login_required
 def appointments_dr(request):
     if not isDoctor(request.user):
         messages.add_message(request, constants.WARNING, 'Only doctors can open agenda!')
         return redirect('/users/logout')
     else:
+        specialty = request.GET.get('medical_specialties')
+        specialties = Specialties.objects.all()
         today = datetime.now().date()
         #The line says: Today appointments = filter(doctor=logged doctor) filter (Opened appointments are from today or tomorrow (today+1 day)): 
-        appointments_today = Appointment.objects.filter(open_agenda__user=request.user).filter(open_agenda__date__gte=today).filter(open_agenda__date__lt= today + timedelta(days=1))
+        appointments_today = Appointment.objects.filter(open_agenda__user=request.user).filter(open_agenda__date__gte=today).filter(open_agenda__date__lt=today+timedelta(days=7))
         rem_appointments = Appointment.objects.exclude(id__in=appointments_today.values('id')).filter(open_agenda__user=request.user) #Don't show the earlier appointments.
         return render(request, 'appointments_dr.html', {'appointments_today': appointments_today, 'rem_appointments': rem_appointments, 'isDoctor': isDoctor(request.user)} )
 
+@login_required
 def appointments_dr_area(request, id_appointment):
     if request.method=="GET":
         appointment=Appointment.objects.get(id=id_appointment)
         documents = Document.objects.filter(appointment=appointment) #Getting all the doctor's document files sent.
-        return render(request, 'appointments_dr_area.html', {'appointment': appointment, 'isDoctor': isDoctor, 'Documents': documents})
+        return render(request, 'appointments_dr_area.html', {'appointment': appointment, 'isDoctor': isDoctor, 'documents': documents})
     elif request.method=="POST":
         appointment=Appointment.objects.get(id=id_appointment)
         link=request.POST.get('link')
@@ -112,6 +118,7 @@ def appointments_dr_area(request, id_appointment):
         appointment.save()
         messages.add_message(request, constants.SUCCESS, 'Started consultation.')
 
+@login_required
 def finish_appointment(request, id_appointment):
     if not isDoctor(request.user):
         messages.add_message(request, constants.WARNING, 'Only doctors can open agenda!')
@@ -124,8 +131,9 @@ def finish_appointment(request, id_appointment):
         return redirect(f'doctors/open_agenda') #Take the user back to the page.
     appointment.status='F' #Get finished appointments
     appointment.save() #Save it to the DB.
-    return redirect(f'doctors/appointment_dr_area/{id_appointment}') #Take the user back to the page.
+    return redirect(f'/appointment_dr_area/{id_appointment}') #Take the user back to the page.
 
+@login_required
 def add_document(request, id_appointment):
     if not isDoctor(request.user):
         messages.add_message(request, constants.WARNING, 'Only doctors can open agenda!')
@@ -149,3 +157,14 @@ def add_document(request, id_appointment):
     document.save()
     messages.add_message(request, constants.SUCCESS, 'Document successfully created.')
     return redirect(f'doctors/appointment_dr_area/{id_appointment}')
+@login_required
+def dashboard(request):
+    if not isDoctor(request.user):
+        messages.add_message(request, constants.WARNING, 'Only doctors can open the dashboard!')
+        return redirect('/users/logout')
+    
+    appointments = Appointment.objects.filter(open_agenda__user=request.user).filter(open_agenda__date__range=[datetime.now().date() - timedelta(days=7),datetime.now().date() + timedelta(days=1)]), datetime.now().annotate().values('open_agenda__date').annotate(quantity=count('id'))
+    dates = [i['open_agenda__date'].strftime("%d-%m-%Y") for i in appointments]
+    quantity = [i['quantity'] for i in appointments]
+    
+    return render(request, 'dashboard.html', {'dates': dates, 'quantity': quantity})

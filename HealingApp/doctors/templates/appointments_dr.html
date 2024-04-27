@@ -28,14 +28,19 @@
         <div class="row">
 
             <div class="col-md">
-                <input type="text" name="especialidades" id="" class="form-control shadow-main-color" placeholder="Medical specialties: ">
+                <form action="">
+                    <select name="specialty" class="form-select">
+                        {% for specialty in specialties %}
+                            <option value="{{specialty.id}}">{{specialty}}</option>
+                        {% endfor %}
+                    </select>
             </div>
             <div class="col-md">
-                <input type="date" name="data" id="" class="form-control shadow-main-color" placeholder="Appointment date">
+                <input type="date" name="date" id="" class="form-control shadow-main-color" placeholder="Appointment date">
 
             </div>
             <div class="col-md">
-                <input type="submit" value="Filtrar" class="btn btn-dark-color-outline">
+                <input type="submit" value="Filter" class="btn btn-dark-color-outline">
             </div>
         </div>
 
@@ -78,7 +83,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    {% for appointment in remaining_appointments  %}
+                    {% for appointment in rem_appointments  %}
                         <tr>
                             <td><a href="{% url 'appointments_dr_area' appointment.id %}">{{appointment.patient}}</a></td>
                             <td>{{appointment.get_status_display}}</td>

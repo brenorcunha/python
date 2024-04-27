@@ -15,15 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
-# Include libray: For adding the route that sends to 'users' miniApp.
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls'), name='users'),
     path('doctors/', include('doctors.urls'), name='doctors'),
     path('patients/', include('patients.urls'), name='patients'),
+    path('', lambda request: redirect('/patients/home'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

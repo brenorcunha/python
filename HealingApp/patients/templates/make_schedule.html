@@ -17,32 +17,31 @@
                         <div class="row">
                             <div class="col-md-3"><img src="{{doctor.photo.url}}" alt="" class="foto-perfil-card"></div>
                             <div class="col-md">
-                                <p class="p-bold" style="font-size: 20px">Dr (a). {{doctor.name}}<i class="bi bi-patch-check-fill icon-main"></i></p>
+                                <p class="p-bold" style="font-size: 20px">Dr. {{doctor.name}}<i class="bi bi-patch-check-fill icon-main"></i></p>
                                 <p>{{doctor.description}}</p>
                             </div>
                         </div>
                     </div>
                     <br>
                     {% if messages %}
-                        <br>
                         {% for message in messages %}
                             <section class="alert{{message.tags}}">
                                 {{message}}
                             </section>
                         {% endfor %}
                     {% endif %}
-
+                    <br />
                     <hr>
                     <div class="row">
                         {% for schedule in make_schedule %}
                             <div class="col-md-3">
                                 <a class="link" href="{% url 'open_agenda' schedule.id %}">
-                                <div class='selecionar-dia'>
+                                <div class="selecionar-dia">
                                     <div class="header-dias">
                                     <span class="mes">
                                         {{schedule.date.month}}
-                                        # Estes campos exibem o número do Mês e do dia da semana, pesquisar como fazer
-                                        #para aparecerem os nomes dos mesmos, dica: Template filter do Django. 
+                                        {% comment %} Estes campos exibem o número do Mês e do dia da semana, pesquisar como fazer
+                                        para aparecerem os nomes dos mesmos, dica: Template filter do Django.  {% endcomment %}
                                     </span>
                                     
                                     <span class="dia-semana">

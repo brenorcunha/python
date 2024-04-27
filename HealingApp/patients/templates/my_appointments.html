@@ -11,7 +11,7 @@
 
 {% endblock 'head' %}
 
-{% block 'body' %}
+{% block 'body' %} 
     {% include 'partial/navbar.html' %}
     <div class="container">
         <br>
@@ -25,15 +25,21 @@
         <div class="row">
 
             <div class="col-md">
-                <input type="text" name="especialidades" id="medical_specialties" class="form-control shadow-main-color" placeholder="Medical specialties">
+                <form action="">
+                    <select name="specialty" class="form-select">
+                        {% for specialty in specialties %}
+                            <option value="{{specialty.id}}">{{specialty}}</option>
+                        {% endfor %}
+                    </select>
             </div>
             
             <div class="col-md">
-                <input type="date" name="date" id="appointment_date" class="form-control shadow-main-color" placeholder="Appointment date">
+                <input type="date" name="date" id="date" class="form-control shadow-main-color" placeholder="Appointment date">
 
             </div>
             <div class="col-md">
-                <input type="submit" value="Filtrar" class="btn btn-dark-color-outline">
+                <input type="submit" value="Filter" class="btn btn-dark-color-outline">
+            </form>
             </div>
         </div>
 
@@ -49,10 +55,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                    {% for appointment in appointments_today  %}
+                    {% for appointment in my_appointments  %}
                         <tr>
-                            <td><a href="{% url 'appointment' appointment.id %}>Dr(a). {{appointment.open_agenda.user}}</a></td>
-                            <td>{{appointment.get_status_display}}</td>appointments_today
+                            <td><a href="{% url 'make_appointment' id_appointment %}">Dr. {{appointment.open_agenda.user}}</a></td>
+                            <td>{{appointment.get_status_display}}</td>
                             <td>{{appointment.open_agenda.date}}</td>
                         </tr>
                     {% endfor %}
@@ -75,7 +81,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    {% for appointment in consultas_restantes  %}
+                    {% for appointment in rem_appointments  %}
                         <tr>
                             <td><a href="">{{appointment.open_agenda.user}}</a></td> <!-- consulta.paciente if not works current data-->
                             <td>{{appointment.get_status_display}}</td>
