@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from datetime import datetime, timedelta
 from patients.models import Appointment, Document, User
+from django.db.models import Count
 
 @login_required
 # Create your views here.
@@ -67,9 +68,10 @@ def open_agenda(request):
         
         return render(request, 'open_agenda.html', {'dr_data': dr_data, 'open_agenda': open_agenda, 'isDoctor': isDoctor(request.user)})
     elif request.method=="POST":
+        #Formating date with datetime library: 
         date = request.POST.get('date')
-        #Formating date with datetime library, another way is awful to use!
-        formatted_date = datetime.strptime(date, 'd/%m/%YdT%H:%M')
+        formatted_date = datetime.strptime(date, '%Y-%m-%dT%H:%M')
+        #local_date = datetime.stftime(formatted_date, '%d/%m/%Y%H:%M')
         if formatted_date <= datetime.now():
             messages.add_message(request, constants.WARNING, ' The date cannot earlier than today.')
             return redirect('/doctors/open_agenda')
@@ -77,11 +79,11 @@ def open_agenda(request):
         new_appointment=openAgenda(
             date=date,
             user=request.user,
-            scheduled = True
+            scheduled = False
         )
         new_appointment.save()
         
-        messages.add_message(request, constants.SUCCESS, 'Appointment shceduled successfully!')
+        messages.add_message(request, constants.SUCCESS, 'Appointment scheduled successfully!')
         return redirect('/doctors/open_agenda')
     
 @login_required
@@ -91,12 +93,19 @@ def appointments_dr(request):
         return redirect('/users/logout')
     else:
         specialty = request.GET.get('medical_specialties')
-        specialties = Specialties.objects.all()
+        appointment_date = request.GET.get('date')
         today = datetime.now().date()
-        #The line says: Today appointments = filter(doctor=logged doctor) filter (Opened appointments are from today or tomorrow (today+1 day)): 
-        appointments_today = Appointment.objects.filter(open_agenda__user=request.user).filter(open_agenda__date__gte=today).filter(open_agenda__date__lt=today+timedelta(days=7))
-        rem_appointments = Appointment.objects.exclude(id__in=appointments_today.values('id')).filter(open_agenda__user=request.user) #Don't show the earlier appointments.
-        return render(request, 'appointments_dr.html', {'appointments_today': appointments_today, 'rem_appointments': rem_appointments, 'isDoctor': isDoctor(request.user)} )
+        
+        appointments_today = Appointment.objects.filter(open_agenda__user=request.user, open_agenda__date__gte=today, open_agenda__appointment__status__in=['I','S'])
+        rem_appointments = Appointment.objects.exclude(id__in=appointments_today.values('id'), open_agenda__user=request.user)
+        
+        if appointment_date:
+            appointments_today = Appointment.objects.filter(open_agenda__user=request.user, open_agenda__date__gte=appointment_date)
+        if specialty:
+            appointments_today = Appointment.objects.filter(open_agenda__user=request.user, open_agenda__user__drData__specialty__id=specialty)
+        
+        specialties = Specialties.objects.all()
+        return render(request, 'appointments_dr.html', {'appointments_today': appointments_today, 'rem_appointments': rem_appointments,'specialties': specialties, 'isDoctor': isDoctor(request.user)})
 
 @login_required
 def appointments_dr_area(request, id_appointment):
@@ -157,14 +166,17 @@ def add_document(request, id_appointment):
     document.save()
     messages.add_message(request, constants.SUCCESS, 'Document successfully created.')
     return redirect(f'doctors/appointment_dr_area/{id_appointment}')
+
 @login_required
 def dashboard(request):
     if not isDoctor(request.user):
         messages.add_message(request, constants.WARNING, 'Only doctors can open the dashboard!')
         return redirect('/users/logout')
-    
-    appointments = Appointment.objects.filter(open_agenda__user=request.user).filter(open_agenda__date__range=[datetime.now().date() - timedelta(days=7),datetime.now().date() + timedelta(days=1)]), datetime.now().annotate().values('open_agenda__date').annotate(quantity=count('id'))
-    dates = [i['open_agenda__date'].strftime("%d-%m-%Y") for i in appointments]
+
+    # Consulta correta com agregação
+    appointments = Appointment.objects.filter(open_agenda__user=request.user, open_agenda__date__range=[datetime.now().date() - timedelta(days=7), datetime.now().date() + timedelta(days=1)]).annotate(quantity=Count('id')).values('open_agenda__date', 'quantity')
+
+    dates = [i['open_agenda__date'].strftime("%d/%m/%Y") for i in appointments]
     quantity = [i['quantity'] for i in appointments]
-    
+
     return render(request, 'dashboard.html', {'dates': dates, 'quantity': quantity})

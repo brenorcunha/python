@@ -9,63 +9,71 @@
 {% endblock 'head' %}
 
 {% block 'body' %}
-{% include 'partial/navbar.html' %}
+{% include "partial/navbar.html" %}
+
     <div class="container">
         <br><br>
+
+        <div class="row">
+            <div class="col-md-8">
+
                 <div class="row">
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-3"><img src="{{doctor.photo.url}}" alt="" class="foto-perfil-card"></div>
-                            <div class="col-md">
-                                <p class="p-bold" style="font-size: 20px">Dr. {{doctor.name}}<i class="bi bi-patch-check-fill icon-main"></i></p>
-                                <p>{{doctor.description}}</p>
-                            </div>
-                        </div>
+                    <div class="col-md-3"><img src="{{doctor.photo.url}}" class="foto-perfil-card" alt=""></div>
+                    <div class="col-md">
+                        <p style="font-size: 20px" class="p-bold">Dr(a). {{doctor.name}}  <i class="bi bi-patch-check-fill icon-main"></i></p>
+                        <p>{{doctor.description}}</p>
                     </div>
+                </div> 
+                <br>
+                {% if messages %}
                     <br>
-                    {% if messages %}
-                        {% for message in messages %}
-                            <section class="alert{{message.tags}}">
-                                {{message}}
-                            </section>
-                        {% endfor %}
-                    {% endif %}
-                    <br />
-                    <hr>
-                    <div class="row">
-                        {% for schedule in make_schedule %}
-                            <div class="col-md-3">
-                                <a class="link" href="{% url 'open_agenda' schedule.id %}">
-                                <div class="selecionar-dia">
+                    {% for message in messages %}
+                        <section class="alert {{message.tags}}">
+                            {{message}}
+                        </section>
+                    {% endfor %}
+                {% endif %}
+                
+                <hr>
+                    
+            
+                <div class="row">
+                    
+                    {% for open_agenda in open_agenda %}
+                        <div class="col-md-3">
+                            <a class="link" href="{% url 'open_agenda' open_agenda.id %}">
+                                <div class='selecionar-dia'>
                                     <div class="header-dias">
-                                    <span class="mes">
-                                        {{schedule.date.month}}
-                                        {% comment %} Estes campos exibem o número do Mês e do dia da semana, pesquisar como fazer
-                                        para aparecerem os nomes dos mesmos, dica: Template filter do Django.  {% endcomment %}
-                                    </span>
-                                    
-                                    <span class="dia-semana">
-                                        {{schedule.date.weekday}}
-                                    </span>
+                                        DATE
                                     </div>
-
-                                    <div class="conteudo-data">
-                                    {{schedule.date}}
-                                    </div>
-                                </div>
-                                </a>
-                                <br>
+                                {% comment %} 
+                                <span class="mes">
+                                {{open_agenda.date.month}}
+                                </span>
+                                
+                                <span class="dia-semana">
+                                {{open_agenda.date.weekday}}
+                                </span>
+                             {% endcomment %}
+            
+                            <div class="conteudo-date">
+                                {{open_agenda.date}}
                             </div>
-                            {% endfor %}
-                    </a>
-                    <br>
-                    </div>
-
+                            </div>
+                            </a>
+                            <br>
+                        </div>
+                    {% endfor %}
+                        
+                   
+                    
                 </div>
+
             </div>
             <div class="col-md-4">
-                
+
             </div>
         </div>
+
     </div>
 {% endblock 'body' %}

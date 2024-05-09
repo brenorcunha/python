@@ -37,11 +37,26 @@
             </div>
             <div class="col-md-4">
                 <p class="p-bold" style="font-size: 25px"> Your agenda: </p>
-                <ul class="list-group">
-                    {% for date in open_agenda %}
-                    <li>{{date}}</li>
-                    {% endfor %}
-                </ul>
+                {% for open_agenda in open_agenda %}
+                        <div class="col-md">
+                                <div class='selecionar-dia'>
+                                    <div class="header-dias">
+                                        {{open_agenda.date}}
+                                    </div>
+                                {% comment %} 
+                                <span class="mes">
+                                {{open_agenda.date.month}}
+                                </span>
+                                
+                                <span class="dia-semana">
+                                {{open_agenda.date.weekday}}
+                                </span>
+                             {% endcomment %}
+                            </div>
+                            </a>
+                            <br>
+                        </div>
+                {% endfor %}
             </div>
         </div>
     </div>

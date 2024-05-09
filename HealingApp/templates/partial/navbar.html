@@ -7,7 +7,18 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            {% if not isDoctor %}
+            {% if isDoctor %}
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Doctors area
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                      <li><a class="dropdown-item" href="{% url 'open_agenda' %}">Open agenda</a></li>
+                      <li><a class="dropdown-item" href="{% url 'appointments_dr' %}">Your appointments</a></li>
+                      <li><a class="dropdown-item" href="{% url 'dashboard' %}">Your dashboard</a></li>
+                  </ul>
+              </li>
+            {% elif not isDoctor %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Patient area
@@ -16,23 +27,16 @@
                   <li><a class="dropdown-item" href="{% url 'home' %}">Home</a></li>
                   <li><a class="dropdown-item" href="{% url 'my_appointments' %}">My appointments</a></li>
                 </ul>
-            </li>
-            {% endif %}
-            {% if isDoctor %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Doctors area
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="{% url 'open_agenda' %}">Open agenda</a></li>
-                        <li><a class="dropdown-item" href="{% url 'appointments_dr' %}">Your appointments</a></li>
-                        <li><a class="dropdown-item" href="{% url 'dashboard' %}">Your dashboard</a></li>
-                    </ul>
-                </li>
+              </li>
             {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register_doctors' %}">I'm a doctor.</a>
-                </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  My area
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li><a class="dropdown-item" href="{% url 'home' %}">Home</a></li>
+                </ul>
+              </li>
             {% endif %}
             <li class="nav-item">
               <a href="{% url 'logout' %}" class="nav-link">Logout </a>

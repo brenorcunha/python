@@ -29,9 +29,8 @@
 }
 
 .bg-main-lembrete{
-
     background-color: var(--dark-color);
-    padding: 10px;
+    padding: 20px;
     color: white;
 }
 

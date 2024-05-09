@@ -26,7 +26,6 @@ def register(request):
         if users.exists():
             messages.add_message(request, constants.ERROR, 'User already exists in the DB!')
             return redirect("./users/register")
-        # Saving user in the DB: 
         else:
             try:
                 User.objects.create_user(

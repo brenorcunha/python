@@ -15,7 +15,7 @@
     <div class="col-md-8">
         
       <p style="font-size: 25px" class="p-bold">
-        Hello, <span class="color-dark">{{request.user.username}}. </span>
+        Hello, <span class="color-dark">{{request.user}}. </span>
       </p>
         <form action="{% url 'home' %}" method="GET">
           <input
@@ -59,14 +59,15 @@
               </div>
             </div>
             <p><i class="bi bi-map icon-main"></i>&nbsp;&nbsp;{{doctor.street}}</p>
-            <p><i class="bi bi-calendar2-week icon-main"></i>&nbsp;&nbsp; Next available date: </p>
-
-                {% if doctor.next_date %}
-                    {{doctor.next_date}}
-                {% else %}
-                    Keep waiting. There are no available dates now.
-                {% endif %}
-
+            <p><i class="bi bi-calendar2-week icon-main"></i>&nbsp;&nbsp; Next available dates: </p>
+            <ul class="list-group">
+            {% for date in doctor.next_date %}
+            <p>{{ date }}</p>
+            {% empty %}
+            Keep waiting. There are no available dates now.
+            {% endfor %}
+            </ul>
+            
                 <br />
             <a href="{% url 'make_schedule' doctor.id %}" class="btn btn-success btn-dark-color">Schedule</a>
             
@@ -76,16 +77,25 @@
       {% endfor %}
       </div>
     </div>
+    {% if not isDoctor %}
     <div class="col-md-4">
       <p style="font-size: 25px" class="p-bold">Reminders</p>
+      {%for doctor in doctors %}
+      {% for date in doctor.next_sched_date %}
       <p class="bg-main-lembrete">
-        {% for appointment in appointments_today %}
-        <span class="p-bold"><i class="bi bi-exclamation-triangle-fill icon-differential"></i
-        >&nbsp;&nbsp; Appointment with Dr. {{doctor.name}} in {{appointment.date}}.</span>
-        {% endfor %}
+        You have an appointment in: {{ date }} with Dr. {{ doctor.name}}
       </p>
-      </p>  
-    </div>
+        {% empty %}
+        <p class="bg-main-lembrete">
+        You have no more scheduled consultations this week.
+        </p>
+        {% endfor %}
+        {% endfor %}
+      
+  </div>
+  
+  {% comment %} <span class="p-bold"><i class="bi bi-exclamation-triangle-fill icon-differential"></i> </span> {% endcomment %}
+    {% endif %}
   </div>
 </div>
 {% endblock 'body' %}
