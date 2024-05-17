@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from doctors.models import drData, Specialties, openAgenda, isDoctor
 from datetime import date, datetime, timedelta
-from django.utils import timezone
 from .models import Appointment, Document
 from django.contrib import messages
 from django.contrib.messages import constants
@@ -68,8 +67,8 @@ def appointment(request, id_appointment):
     if request.method=="GET":
         my_appointments = Appointment.objects.get(id=id_appointment)
         #using the 'open_agenda' attribute from doctor's view to get it's name: 
-        dr_data = drData.objects.get(user=open_agenda.user)
-        documents = Document.objects.filter(appointment=appointment)
+        dr_data = drData.objects.get(user=my_appointments.open_agenda.user)
+        documents = Document.objects.filter(appointment=my_appointments)
         return render(request, 'appointment.html', {'my_appointments': my_appointments, 'dr_data': dr_data, 'documents ': documents})
 
 #minhas_consultas
@@ -80,15 +79,15 @@ def my_appointments(request):
     cancel = request.GET.get('cancel')
     
     today = datetime.now().date()
-    my_appointments = Appointment.objects.filter(open_agenda__user=request.user, open_agenda__date=today)
+    my_appointments = Appointment.objects.filter(patient=request.user, open_agenda__date=today, status='S')
     #rem_appointments = Appointment.objects.exclude(id__in=appointments_today.values('id'), open_agenda__user=request.user) #Don't show the earlier appointments.
     
-    rem_appointments = Appointment.objects.filter(patient=request.user, open_agenda__date__gt=date.today())
+    rem_appointments = Appointment.objects.filter(patient=request.user, open_agenda__date__gt=date.today(), status='S')
 
     if appointment_date:
-       my_appointments = Appointment.objects.filter(patient=request.user, open_agenda__date__gte=appointment_date)
+       my_appointments = Appointment.objects.filter(patient=request.user, open_agenda__date__gte=appointment_date, status='S')
     if specialty:
-        my_appointments = Appointment.objects.filter(patient=request.user, open_agenda__user__drData__specialty__id=specialty)
+        my_appointments = Appointment.objects.filter(patient=request.user, open_agenda__user__drData__specialty__id=specialty, status='S')
     
     specialties = Specialties.objects.all()
     #using the 'open_agenda' attribute from doctor's view to get it's name: THIS
@@ -102,7 +101,8 @@ def cancel_appointment(request, id_appointment):
         messages.add_message(request, constants.WARNING, "Only the patient can cancel an appointment!")
         return redirect('/patients/home')
     else:
-        appointment.status='F' #Get finished appointments
+        appointment.status='C' #Get finished appointments
+        appointment.save() #Save it to the DB.
         appointment.delete() #Delete required appointment
         appointment.save() #Save it to the DB.
-        return redirect(f'/patients/appointment/{id_appointment}')
+        return redirect(f'/patients/my_appointments')

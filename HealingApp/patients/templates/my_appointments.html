@@ -57,14 +57,11 @@
                 <tbody>
                     {% for appointment in my_appointments  %}
                         <tr>
-                            <td><a href="{% url 'appointment' appointment.id %}">{{appointment.open_agenda.user}}</a></td>
+                            <td><a href="#">{{appointment.open_agenda.user}}</a></td>
                             <td>{{appointment.get_status_display}}</td>
-                            <td>{{appointment.open_agenda.date|date:"d/m/Y" }}</td>
-                            <form action="{% url 'cancel_appointment' appointment.id %}" method="post">{% csrf_token %}
-                                <td><input type="submit" name="cancel" id="cancel " value="Cancel" class="btn btn-danger"></td>
-                            </form>
-                        </tr>
-                    {% endfor %}
+                            <td>{{ appointment.open_agenda.date }}</td>
+                            <a href="{% url 'cancel_appointment' id_appointment %}" class="bi bi-patch-check-fill icon-main">Cancel</a>
+                        {% endfor %}
                 </tbody>
               </table>
 
@@ -88,8 +85,8 @@
                     <tr>
                         <td><a href="{% url 'appointment' appointment.id %}">{{appointment.open_agenda.user}}</a></td>
                         <td>{{appointment.get_status_display}}</td>
-                        <td>{{appointment.open_agenda.date|date:"d/m/Y" }}</td>
-                        <form action="{% url 'cancel_appointment' appointment.id %}" method="post">{% csrf_token %}
+                        <td>{{appointment.open_agenda.date}}</td>
+                        <form action="{% url 'cancel_appointment' appointment.id %}" method="POST">{% csrf_token %}
                                 <td><input type="submit" name="cancel" id="cancel " value="Cancel" class="btn btn-danger"></td>
                         </form>
                         </tr>

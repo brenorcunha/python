@@ -60,6 +60,7 @@
             </div>
             <p><i class="bi bi-map icon-main"></i>&nbsp;&nbsp;{{doctor.street}}</p>
             <p><i class="bi bi-calendar2-week icon-main"></i>&nbsp;&nbsp; Next available dates: </p>
+            {% comment %} |date:"d/m/Y" {% endcomment %}
             <ul class="list-group">
             {% for date in doctor.next_date %}
             <p>{{ date }}</p>
@@ -81,16 +82,15 @@
     <div class="col-md-4">
       <p style="font-size: 25px" class="p-bold">Reminders</p>
       {%for doctor in doctors %}
+  
       {% for date in doctor.next_sched_date %}
       <p class="bg-main-lembrete">
-        You have an appointment in: {{ date }} with Dr. {{ doctor.name}}
+        You have an appointment in: {{ date }} with Dr. {{ doctor.name }}
       </p>
-        {% empty %}
-        <p class="bg-main-lembrete">
-        You have no more scheduled consultations this week.
-        </p>
-        {% endfor %}
-        {% endfor %}
+      
+      {% endfor %}
+      
+      {% endfor %}
       
   </div>
   

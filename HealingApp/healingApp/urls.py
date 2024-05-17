@@ -25,5 +25,5 @@ urlpatterns = [
     path('users/', include('users.urls'), name='users'),
     path('doctors/', include('doctors.urls'), name='doctors'),
     path('patients/', include('patients.urls'), name='patients'),
-    path('', lambda request: redirect('/patients/home'))
+    path('', lambda request: redirect('/users/login'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -17,40 +17,40 @@
 
     <br><br>
     <div class="container">
-        {% if appointment.status=='C' %}
+        {% if 'C' in my_appointments.status %}
+        <div class="alert alert-danger" role="alert">
+            Consultation canceled!
+        </div>
+        {% elif 'F' in my_appointments.status %}
             <div class="alert alert-danger" role="alert">
-                Appointment canceled.
-            </div>
-        {% elif appointment.status=='F'%}
-            <div class="alert alert-success" role="alert">
-                Appointment finished.
-            </div>
-        {% elif appointment.status=='1'%}
+                Finished Schedule!
+           </div>
+        {% elif 'I' in my_appointments.status %}
             <div class="alert alert-primary" role="alert">
-                Appointment started. Access the link immediatly.
+                Consultation started. Access the link right now!
             </div>
         {% endif %}
         <div class="row">
             <div class="col-md-8">
                 <div class="row">
-                    <div class="col-md-3"><img src="{{drData.photo.url}}" class="foto-perfil-card-lg" alt=""></div>
+                    <div class="col-md-4"><img src="{{dr_data.photo.url}}" class="foto-perfil-card-lg" alt=""></div>
                     <div class="col-md">
-                        <p style="font-size: 20px" class="p-bold">Dr. {{drData.name}} <i class="bi bi-patch-check-fill icon-main"></i></p>
-                        <p>{{drData.description}}</p>
-                        <p class="p-bold">{{appointment.open_agenda.date}}</p> 
-                        <a href="{% url 'cancel_appointment' appointment.id %}" class="btn btn-danger">Cancel</a>
+                        <p style="font-size: 20px" class="p-bold">Dr. {{dr_data.name}} <i class="bi bi-patch-check-fill icon-main"></i></p>
+                        <p>{{dr_data.description}}</p>
+                        <p class="p-bold">{{my_appointments.open_agenda.date}}</p> 
+                        {% comment %} <a href="{% url 'cancel_appointment' id_appointment %}" class="bi bi-patch-check-fill icon-main">Cancel</a> {% endcomment %}
                     </div>
                 </div> 
                 <hr>
-                <br>id_appointment
+                <br>
                 <div class="row">
                     <div class="col-md">
                         
                         <p><i class="color-dark bi bi-check-circle-fill"></i> Scheduled Consultation </p>
                     </div>
                     <div class="col-md">
-                        <!-- IF consult is finished ADDS class 'color-dark', that turns it into blue -->
-                        <p><i class="{% if appointment.status=='F' %}color-dark bi bi-check-circle-fill"></i> Consultation done </p>
+                        <!-- IF consult is finished ADDS class "color-dark", that turns it into blue -->
+                        <p><i class="{% if my_appointments.status == 'F' %}color-dark{% endif %} bi bi-check-circle-fill"></i> Consultation done </p>
                     </div>
                     <div class="col-md">
                         <p><i class="bi bi-check-circle-fill"></i> Evaluated Consultation </p>
@@ -58,24 +58,23 @@
                 </div>
                 <hr>
                 <h3 class="p-bold">Consultation details</h3>
-                <p style="font-size:20px"><i class="bi bi-calendar3 color-dark"></i>&nbsp; {{appointment.open_agenda.date}}</p>
-                <p style="font-size:20px"><i class="bi bi-tag-fill color-dark"></i></i>&nbsp; R$ {{drData.appointmentValue}}</p>
-                <a style="cursor: auto;" class="btn btn-dark-color-outline btn-lg">Add it to your agenda</a>
+                <p style="font-size:20px"><i class="bi bi-calendar3 color-dark"></i>&nbsp; {{my_appointments.open_agenda.date}}</p>
+                <p style="font-size:20px"><i class="bi bi-tag-fill color-dark"></i></i>&nbsp; R$ {{dr_data.appointmentValue}}0</p>
+                
                 <hr>
                 <h3 class="p-bold"> How to access?</h3>
                 <p>At the time of the consultation, access the link available below</p>
                 
-                {% if appointment.status == 'I' and appointment.link %}
-                    <a href="{{appointment.link}}" class="btn btn-success btn-dark-color btn-lg" >Access consultation</a>
-                {% else %}
-                    <a href="#" class="btn btn-success btn-dark-color btn-lg disabled" >Access consultation</a>
-                
+                {% if "I" in my_appointments.status and my_appointments.link %}
+                    <a href="{{my_appointments.link}}" class="btn btn-success btn-dark-color btn-lg" >Access consultation</a>
+                {% comment %} {% else %} <a href="{% url 'appointment' id_appointment%}" class="btn btn-success btn-dark-color btn-lg" >Access consultation</a> {% endcomment %}
+                {% endif %}
                 <hr>
                 <h3 class="p-bold">My documents</h3>
                 <br>
                 <br>
                 {% for document in documents %}
-                    <a href="{{document.document.url}}" class="link-documentos"><i class="bi bi-file-arrow-down"></i> {{document.title}} - {{document.appointment.open_agenda.date.year}}</a>
+                    <a href="{{document.link}}" class="link-documentos"><i class="bi bi-file-arrow-down"></i> {{document.title}} - {{document.my_appointments.open_agenda.date.year}}</a>
                     <br>
                     <br>
                 {% endfor %}

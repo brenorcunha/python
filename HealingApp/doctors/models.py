@@ -49,12 +49,14 @@ class drData(models.Model):
 
     @property
     def next_date(self):
-        next_date = openAgenda.objects.filter(user=self.user, date__gte=datetime.now(), scheduled=False).order_by('date')#Getting all the available dates of appointment but ONLY FROM THE CURRENT DR.
+        next_date = openAgenda.objects.filter(user=self.user, date__gte=datetime.now(), scheduled=False).order_by('date') #Getting all the available dates of appointment but ONLY FROM THE CURRENT DR.
         #'data_gt' is an adavanced filter Greater than, we also have (lt=less than,lte=less or equal than, gte=greater or equal than)
         return next_date
     
+    @property
     def next_sched_date(self):
-        next_sched_date = openAgenda.objects.filter(user=self.user, date__gte=datetime.now(), date__lte=datetime.now()+timedelta(days=7), scheduled=True).order_by('date')
+        next_sched_date = openAgenda.objects.filter(user=self.user, date__gte=datetime.now(), date__lte=datetime.now()+timedelta(days=7), scheduled=True,).order_by('date')
+        
         return next_sched_date
 
 class openAgenda(models.Model):
