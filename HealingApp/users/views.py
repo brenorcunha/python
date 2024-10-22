@@ -20,12 +20,12 @@ def register(request):
         if len(password)<6:
             messages.add_message(request, constants.ERROR, 'The password must have at least, 6 digits. ')
             return redirect("/users/register") 
-        #users = User.objects.all() #Returns all the objs from BD
+        #users = User.objects.all() #Returns all the objects from DB
         users = User.objects.filter(username=username) # Returns only if this username already exists in the DB.
         print(users)
         if users.exists():
             messages.add_message(request, constants.ERROR, 'User already exists in the DB!')
-            return redirect("./users/register")
+            return redirect("/users/register")
         else:
             try:
                 User.objects.create_user(
@@ -51,7 +51,7 @@ def login_view(request):
         authenticate(request, username=username)
         pwd = user.check_password(password)
 
-        #print('User Exists ', user) OK
+        #print('User Exists ', user)
 
         if user is not None and pwd:
             login(request, user)
@@ -63,6 +63,6 @@ def login_view(request):
             return redirect('/users/login/')
 
 def logout(request):
-    #print(request.user.is_authenticated) is there a logged user?
+    #print(request.user.is_authenticated) #is there a logged user?
     auth.logout(request)
     return redirect('/users/login')

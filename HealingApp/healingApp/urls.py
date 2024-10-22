@@ -13,6 +13,10 @@ Class-based views
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+    admin 1234
+    brenorc Breno@123
+    josehac Jose@123
+    annas 123456
 """
 from django.contrib import admin
 from django.shortcuts import redirect

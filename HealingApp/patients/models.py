@@ -9,7 +9,7 @@ class Appointment(models.Model):
         ('S', 'Scheduled'),
         ('F', 'Finished'),
         ('C', 'Cancelled'),
-        ('I', 'Initilized')
+        ('I', 'Initialized')
     )
     patient = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     open_agenda = models.ForeignKey(openAgenda, on_delete=models.DO_NOTHING) #data_aberta: The doctor is the only one who opens the agenda.

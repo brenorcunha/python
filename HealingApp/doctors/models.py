@@ -41,8 +41,8 @@ class drData(models.Model):
     def __str__(self):
         return self.user.username
     
-    """"Appointment value:
-    After creating this class, with the rg (brazilian ID) we have to store an image or a PDF. Query at 'settings;py'
+    """Appointment value:
+    After creating this class, with the rg (brazilian ID) we have to store an image or a PDF. Query at settings.py
     the following parameters (MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  & MEDIA_URL = '/media/').
     In programming, WE DON'T INSERT IMAGES OR PDF's in the DB, we upload to a specific folder & refers to it in the table.
     """

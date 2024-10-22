@@ -5,6 +5,7 @@ from datetime import date, datetime, timedelta
 from .models import Appointment, Document
 from django.contrib import messages
 from django.contrib.messages import constants
+from django.db import transaction #Adding atomicity
 
 @login_required
 def home(request):
@@ -24,8 +25,7 @@ def home(request):
             if specialties_filter:
                 doctors = doctors.filter(specialty_id__in=specialties_filter)
             
-            #LEMBRETES: Aqui obtenho as consultas deste user. Agora será iterar e põr pra exibir na barra de lembretes
-            #porém SOMENTE SE user é um paciente.    
+            #LEMBRETES: Getting only the appointments from the current user (patient!). Then, iter over it and shows in reminders bar.   
             today = datetime.now().date()
             my_appointments = Appointment.objects.filter(open_agenda__user=request.user, open_agenda__date__gte=today, open_agenda__date__lt=today+timedelta(days=7))
             
@@ -41,25 +41,24 @@ def make_schedule(request, id_doctor):
         open_agenda = openAgenda.objects.filter(user=doctor.user, date__gte= datetime.now(), scheduled=False)
         return render(request, 'make_schedule.html', {'doctor': doctor, 'open_agenda': open_agenda, 'isDoctor': isDoctor(request.user)})
 
-# TAREFA: Pesquise sobre o conceito de atomicidade em BD's, no caso abaixo, seria para
-#que não salvasse os efeitos do método abaixo, a não ser que ele tenha sido completamente concluído.
-#salvar parcialmente, n caso de uma queda de enrgia, corromperia a operação.
-    
 #agendar horario: 
 @login_required
+@transaction.atomic
 def open_agenda(request, id_open_agenda):
     if request.method=="GET":
-        open_agenda = openAgenda.objects.get(id=id_open_agenda)
-        schedule = Appointment( 
-            patient=request.user,
-            open_agenda = open_agenda
-        )
-        schedule.save() #Saves the new scheduled appointment
-        open_agenda.scheduled = True #Update this value, only in the temp memory.
-        open_agenda.save() #Saves it to the DB.
-        messages.add_message(request, constants.SUCCESS, "Appointment successfully scheduled!")
-        
-        return redirect('/patients/my_appointments')
+        try:
+            open_agenda = openAgenda.objects.get(id=id_open_agenda)
+            schedule = Appointment( 
+                patient=request.user,
+                open_agenda = open_agenda
+            )
+            schedule.save() #Saves the new scheduled appointment
+            open_agenda.scheduled = True #Update this value, only in the temp memory.
+            open_agenda.save() #Saves it to the DB.
+            messages.add_message(request, constants.SUCCESS, "Appointment successfully scheduled!")
+            return redirect('/patients/my_appointments')
+        except:
+            messages.add_message(request, constants.ERROR, "Fail on trying to open appointment!")
 
 #consulta
 @login_required
@@ -76,7 +75,7 @@ def appointment(request, id_appointment):
 def my_appointments(request):
     specialty = request.GET.get('medical_specialties')
     appointment_date = request.GET.get('date')
-    cancel = request.GET.get('cancel')
+    #cancel = request.GET.get('cancel')
     
     today = datetime.now().date()
     my_appointments = Appointment.objects.filter(patient=request.user, open_agenda__date=today, status='S')
@@ -90,10 +89,10 @@ def my_appointments(request):
         my_appointments = Appointment.objects.filter(patient=request.user, open_agenda__user__drData__specialty__id=specialty, status='S')
     
     specialties = Specialties.objects.all()
-    #using the 'open_agenda' attribute from doctor's view to get it's name: THIS
+    #using the 'open_agenda' attribute from doctor's view to get its name: THIS
     return render(request, 'my_appointments.html',{'my_appointments': my_appointments, 'rem_appointments': rem_appointments, 'specialties': specialties})
     
-
+@transaction.atomic
 def cancel_appointment(request, id_appointment):
     appointment=Appointment.objects.get(id=id_appointment)
     if request.user != appointment.patient: 
@@ -101,8 +100,11 @@ def cancel_appointment(request, id_appointment):
         messages.add_message(request, constants.WARNING, "Only the patient can cancel an appointment!")
         return redirect('/patients/home')
     else:
-        appointment.status='C' #Get finished appointments
-        appointment.save() #Save it to the DB.
-        appointment.delete() #Delete required appointment
-        appointment.save() #Save it to the DB.
-        return redirect(f'/patients/my_appointments')
+        try:
+            appointment.status='C' #Get finished appointments
+            appointment.save() #Save it to the DB.
+            appointment.delete() #Delete required appointment
+            appointment.save() #Save it to the DB.
+            return redirect(f'/patients/my_appointments')
+        except:
+            messages.add_message(request, constants.ERROR, "Fail on trying to alter the appointments. try again!")

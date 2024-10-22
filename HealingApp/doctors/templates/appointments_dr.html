@@ -57,7 +57,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    {% for appointment in appointments_today  %}
+                    {% for appointment in appointments_today %}
                         <tr>
                             <td><a href="{% url 'appointments_dr_area' appointment.id %}">{{appointment.patient}}</a></td>
                             <td>{{appointment.get_status_display}}</td>

@@ -30,10 +30,10 @@ Made with Python and Django 5.0.
 ![Homepage -Patients](https://onedrive.live.com/embed?resid=5D154344EF67B72B%2160058&authkey=%21AIHWg53cxODxgsI&width=660)
 ![User consultations](https://onedrive.live.com/embed?resid=5D154344EF67B72B%2160061&authkey=%21AJWEBmEpP0NmyH8&width=660)
 ![Medical register](https://onedrive.live.com/embed?resid=5D154344EF67B72B%2159980&authkey=%21AP8acmDpz5XgV5s&width=660)
-![Dr's open agenda](https://onedrive.live.com/embed?resid=5D154344EF67B72B%2160059&authkey=%21AI4aBP1l0dI9fyg&width=1366&height=656)
-![Dr's appointments](https://onedrive.live.com/embed?resid=5D154344EF67B72B%2160057&authkey=%21ABqaWDbuzru_4D0&width=1366&height=656)
-![Patients - Available consultations] (https://onedrive.live.com/embed?resid=5D154344EF67B72B%2160062&authkey=%21APwc7QD1-l-vjTg&width=660)
-![Dr's dashboard] (https://onedrive.live.com/embed?resid=5D154344EF67B72B%2160060&authkey=%21AJQukG3DVt7syCc&width=660)
+![Dr's open agenda](https://onedrive.live.com/embed?resid=5D154344EF67B72B%2160059&authkey=%21AI4aBP1l0dI9fyg&height=656)
+![Dr's appointments](https://onedrive.live.com/embed?resid=5D154344EF67B72B%2160057&authkey=%21ABqaWDbuzru_4D0&height=656)
+![Patients -Available consultations](https://onedrive.live.com/embed?resid=5D154344EF67B72B%2160062&authkey=%21APwc7QD1-l-vjTg&width=660)
+![Dr's dashboard](https://onedrive.live.com/embed?resid=5D154344EF67B72B%2160060&authkey=%21AJQukG3DVt7syCc&width=660>)
 
 ## Requirements
 
@@ -47,11 +47,13 @@ Made with Python and Django 5.0.
 - click-didyoumean==0.3.1
 - click-plugins==1.1.1
 - click-repl==0.3.0
+- dj-database-url-2.2.0
 - Django==5
 - kombu==5.3.7
 - pillow==10.3.0
 - prompt-toolkit==3.0.43
 - python-dateutil==2.9.0.post0
+- python-decouple-3.8
 - redis==5.0.4
 - six==1.16.0
 - sqlparse==0.4.4
