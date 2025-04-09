@@ -1,5 +1,5 @@
 from itertools import count
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Specialties, drData, isDoctor,openAgenda
 from django.http.response import HttpResponse
@@ -8,6 +8,7 @@ from django.contrib.messages import constants
 from datetime import datetime, timedelta
 from patients.models import Appointment, Document, User
 from django.db.models import Count
+from django.urls import reverse
 
 @login_required
 # Create your views here.
@@ -109,24 +110,27 @@ def appointments_dr(request):
 
 @login_required
 def appointments_dr_area(request, id_appointment):
-    if request.method=="GET":
-        appointment=Appointment.objects.get(id=id_appointment)
-        documents = Document.objects.filter(appointment=appointment) #Getting all the doctor's document files sent.
-        return render(request, 'appointments_dr_area.html', {'appointment': appointment, 'isDoctor': isDoctor, 'documents': documents})
-    elif request.method=="POST":
-        appointment=Appointment.objects.get(id=id_appointment)
-        link=request.POST.get('link')
-        if appointment.status == 'C':
-            messages.add_message(request, constants.WARNING, 'Consultation already CANCELED! No operations available.')
-            return redirect(f'doctors/appointment_dr_area/{id_appointment}')
-        elif appointment.status == 'F':
-            messages.add_message(request, constants.WARNING, 'Consultation already FINISHED! No operations available.')
-            return redirect(f'doctors/appointment_dr_area/{id_appointment}')
-        appointment.link =link
-        appointment.status = 'S'
-        appointment.save()
-        messages.add_message(request, constants.SUCCESS, 'Started consultation.')
-
+    try:
+        if request.method=="GET":
+            appointment=get_object_or_404(Appointment, id=id_appointment)
+            documents = Document.objects.filter(appointment=appointment) #Getting all the doctor's document files sent.
+            return render(request, 'appointments_dr_area.html', {'appointment': appointment, 'isDoctor': isDoctor, 'documents': documents})
+        elif request.method=="POST":
+            appointment=Appointment.objects.get(id=id_appointment)
+            link=request.POST.get('link')
+            if appointment.status == 'C':
+                messages.add_message(request, constants.WARNING, 'Consultation already CANCELED! No operations available.')
+                return redirect(f'doctors/appointments_dr_area/{id_appointment}')
+            elif appointment.status == 'F':
+                messages.add_message(request, constants.WARNING, 'Consultation already FINISHED! No operations available.')
+                return redirect(f'doctors/appointments_dr_area/{id_appointment}')
+            appointment.link =link
+            appointment.status = 'S'
+            appointment.save()
+            messages.add_message(request, constants.SUCCESS, 'Started consultation.')
+    except Appointment.DoesNotExist:
+         messages.add_message(request, constants.ERROR, 'Appointment NOT FOUND!')
+         return redirect(f'/appointments_dr')
 @login_required
 def finish_appointment(request, id_appointment):
     if not isDoctor(request.user):
@@ -137,10 +141,11 @@ def finish_appointment(request, id_appointment):
     # DEFENSIVE CODE: Verifying if the user logged is the doctor rsponsaible for the appointment, if NOT, do not allow!
     if request.user!=appointment.open_agenda.user:
         messages.add_message(request, constants.ERROR, 'You cannot finish this appointment!')
-        return redirect(f'doctors/open_agenda') #Take the user back to the page.
+        return redirect(reverse('open_agenda')) #Take the user back to the page.
     appointment.status='F' #Get finished appointments
     appointment.save() #Save it to the DB.
-    return redirect(f'/appointment_dr_area/{id_appointment}') #Take the user back to the page.
+    messages.add_message(request, constants.SUCCESS, 'Appointment successfully canceled/ finished')
+    return redirect(reverse('appointments_dr_area', args=[id_appointment])) #Take the user back to the page.
 
 @login_required
 def add_document(request, id_appointment):
@@ -157,7 +162,7 @@ def add_document(request, id_appointment):
     
     if not document:
         messages.add_message(request, constants.ERROR('You must fill the <document> field.'))
-        return redirect(f'doctors/appointment_dr_area/{id_appointment}') 
+        return redirect(f'doctors/appointments_dr_area/{id_appointment}') 
     document = Document(
         appointment=appointment,
         title=title,
@@ -165,7 +170,7 @@ def add_document(request, id_appointment):
     )
     document.save()
     messages.add_message(request, constants.SUCCESS, 'Document successfully created.')
-    return redirect(f'doctors/appointment_dr_area/{id_appointment}')
+    return redirect(f'doctors/appointments_dr_area/{id_appointment}')
 
 @login_required
 def dashboard(request):

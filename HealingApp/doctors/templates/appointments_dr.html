@@ -59,7 +59,7 @@
                 <tbody>
                     {% for appointment in appointments_today %}
                         <tr>
-                            <td><a href="{% url 'appointments_dr_area' appointment.id %}">{{appointment.patient}}</a></td>
+                            <td><a href="{% url 'appointments_dr_area' id_appointment=appointment.id %}">{{appointment.patient}}</a></td>
                             <td>{{appointment.get_status_display}}</td>
                             <td>{{appointment.open_agenda.date}}</td>
                         </tr>
@@ -85,7 +85,7 @@
                 <tbody>
                     {% for appointment in rem_appointments  %}
                         <tr>
-                            <td><a href="{% url 'appointments_dr_area' appointment.id %}">{{appointment.patient}}</a></td>
+                            <td><a href="{% url 'appointments_dr_area' id_appointment=appointment.id %}">{{appointment.patient}}</a></td>
                             <td>{{appointment.get_status_display}}</td>
                             <td>{{appointment.open_agenda.date}}</td>
                         </tr>

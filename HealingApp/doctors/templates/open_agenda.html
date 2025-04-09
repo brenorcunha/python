@@ -38,24 +38,25 @@
             <div class="col-md-4">
                 <p class="p-bold" style="font-size: 25px"> Your agenda: </p>
                 {% for open_agenda in open_agenda %}
+                    {% if open_agenda.date >= now%}
                         <div class="col-md">
-                                <div class='selecionar-dia'>
-                                    <div class="header-dias">
-                                        {{open_agenda.date}}
-                                    </div>
-                                {% comment %} 
-                                <span class="mes">
-                                {{open_agenda.date.month}}
-                                </span>
-                                
-                                <span class="dia-semana">
-                                {{open_agenda.date.weekday}}
-                                </span>
-                             {% endcomment %}
+                            <div class='selecionar-dia'>
+                                <div class="header-dias">
+                                    {{open_agenda.date}}
+                                </div>
+                            {% comment %} 
+                            <span class="mes">
+                            {{open_agenda.date.month}}
+                            </span>
+                            
+                            <span class="dia-semana">
+                            {{open_agenda.date.weekday}}
+                            </span>
+                            {% endcomment %}
                             </div>
-                            </a>
                             <br>
                         </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>

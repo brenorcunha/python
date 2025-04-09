@@ -21,8 +21,8 @@ import os
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 SECRET_KEY=config("SECRET_KEY")
-DEBUG=config("DEBUG")
-ALLOWED_HOSTS=config("ALLOWED_HOSTS", cast=Csv())
+DEBUG=False
+ALLOWED_HOSTS=["*"]
 
 # Application definition
 # In the following list we have to declare the new module to set it as a Django app:
@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'healingApp.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': config("DATABASE_URL", default=f'sqlite:///{BASE_DIR / 'db.sqlite3'}', cast=db_url,)
+    'default': config("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", cast=db_url,)
 }
 
 
