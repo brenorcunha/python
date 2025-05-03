@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from doctors.models import drData, Specialties, openAgenda, isDoctor
 from datetime import date, datetime, timedelta
@@ -64,11 +64,11 @@ def open_agenda(request, id_open_agenda):
 @login_required
 def appointment(request, id_appointment):
     if request.method=="GET":
-        my_appointments = Appointment.objects.get(id=id_appointment)
+        my_appointments = get_object_or_404(Appointment, id=id_appointment)
         #using the 'open_agenda' attribute from doctor's view to get it's name: 
-        dr_data = drData.objects.get(user=my_appointments.open_agenda.user)
+        dr_data = get_object_or_404(drData, user=my_appointments.open_agenda.user)
         documents = Document.objects.filter(appointment=my_appointments)
-        return render(request, 'appointment.html', {'my_appointments': my_appointments, 'dr_data': dr_data, 'documents ': documents})
+        return render(request, 'appointment.html', {'my_appointments': my_appointments, 'dr_data': dr_data, 'documents': documents})
 
 #minhas_consultas
 @login_required
@@ -93,18 +93,23 @@ def my_appointments(request):
     return render(request, 'my_appointments.html',{'my_appointments': my_appointments, 'rem_appointments': rem_appointments, 'specialties': specialties})
     
 @transaction.atomic
+@login_required
 def cancel_appointment(request, id_appointment):
-    appointment=Appointment.objects.get(id=id_appointment)
-    if request.user != appointment.patient: 
-        #IF is NOT the correct user, the owner:
-        messages.add_message(request, constants.WARNING, "Only the patient can cancel an appointment!")
+    try:
+        appointment=get_object_or_404(Appointment, id=id_appointment)
+        if request.user != appointment.patient:
+            #IF is NOT the correct user, the owner:
+            messages.add_message(request, constants.WARNING, "Only the patient can cancel an appointment!")
+            return redirect('/patients/home')
+        else:
+            try:
+                appointment.status='C' #Get finished appointments
+                appointment.save() #Save it to the DB.
+                appointment.delete() #Delete required appointment
+                appointment.save() #Save it to the DB.
+                return redirect(f'/patients/my_appointments')
+            except:
+                messages.add_message(request, constants.ERROR, "Fail on trying to alter the appointments. try again!")
+    except Appointment.DoesNotExist:
+        messages.add_message(request, constants.ERROR , 'The apppointment was not found!')
         return redirect('/patients/home')
-    else:
-        try:
-            appointment.status='C' #Get finished appointments
-            appointment.save() #Save it to the DB.
-            appointment.delete() #Delete required appointment
-            appointment.save() #Save it to the DB.
-            return redirect(f'/patients/my_appointments')
-        except:
-            messages.add_message(request, constants.ERROR, "Fail on trying to alter the appointments. try again!")

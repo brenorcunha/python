@@ -6,12 +6,11 @@ class Agenda(object):
         self.agenda = agenda
         self.lista = lista
     def cargar(self, continua, agenda):
-        
         fecha=input("Ingrese la fecha de la actividad:")
 
         while continua=="s":
             hora=input("Ingrese la hora de la actividad con formato hh:mm \n")
-            actividad=input("Ingrese la descripcon de la actividad:")
+            actividad=input("Ingrese la descripción de la actividad:")
             self.lista.append((hora, actividad))
             agenda[fecha] = self.lista
             
@@ -50,7 +49,7 @@ class Agenda(object):
                 print(fecha, hora,actividad)
             
     def main(self):
-        opcion = input("Escolha sua opção: " \
+        opcion = input("Digite: " \
                        " 1 - Inserir actividad."\
                        " 2 - Consultar actividad por fecha. "\
                        " 3 - Imprimir agenda." \

@@ -1,0 +1,23 @@
+.foto-perfil{
+    width: 150px;
+    height: 150px;
+
+    border-radius: 75px;
+}
+
+.selecionar-dia{
+    width: 100%;
+    background-color: #EAEAEA;
+    box-shadow: 1px 1px 10px gray;
+}
+
+.header-dias{
+    background-color: var(--dark-color);
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.dia-semana{
+    float: right;
+}

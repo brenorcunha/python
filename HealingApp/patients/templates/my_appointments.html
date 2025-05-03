@@ -60,7 +60,7 @@
                             <td><a href="#">{{appointment.open_agenda.user}}</a></td>
                             <td>{{appointment.get_status_display}}</td>
                             <td>{{ appointment.open_agenda.date }}</td>
-                            <a href="{% url 'cancel_appointment' id_appointment %}" class="bi bi-patch-check-fill icon-main">Cancel</a>
+                            <a href="{% url 'cancel_appointment' id_appointment=appointment.id %}" class="bi bi-patch-check-fill icon-main">Cancel</a>
                         {% endfor %}
                 </tbody>
               </table>

@@ -97,13 +97,13 @@ def appointments_dr(request):
         appointment_date = request.GET.get('date')
         today = datetime.now().date()
         
-        appointments_today = Appointment.objects.filter(open_agenda__user=request.user, open_agenda__date__gte=today, open_agenda__appointment__status__in=['I','S'])
-        rem_appointments = Appointment.objects.exclude(id__in=appointments_today.values('id'), open_agenda__user=request.user)
-        
+        appointments_today = Appointment.objects.filter(open_agenda__user=request.user, open_agenda__date__gte=today, status__in=['I','S'])
         if appointment_date:
-            appointments_today = Appointment.objects.filter(open_agenda__user=request.user, open_agenda__date__gte=appointment_date)
+            appointments_today = appointments_today.filter(open_agenda__date=appointment_date)
         if specialty:
-            appointments_today = Appointment.objects.filter(open_agenda__user=request.user, open_agenda__user__drData__specialty__id=specialty)
+            appointments_today = appointments_today.filter(open_agenda__user__drData__specialty__id=specialty)
+        
+        rem_appointments = Appointment.objects.filter(open_agenda__user=request.user). exclude(id__in=appointments_today.values('id'))
         
         specialties = Specialties.objects.all()
         return render(request, 'appointments_dr.html', {'appointments_today': appointments_today, 'rem_appointments': rem_appointments,'specialties': specialties, 'isDoctor': isDoctor(request.user)})
@@ -118,30 +118,34 @@ def appointments_dr_area(request, id_appointment):
         elif request.method=="POST":
             appointment=Appointment.objects.get(id=id_appointment)
             link=request.POST.get('link')
-            if appointment.status == 'C':
-                messages.add_message(request, constants.WARNING, 'Consultation already CANCELED! No operations available.')
-                return redirect(f'doctors/appointments_dr_area/{id_appointment}')
-            elif appointment.status == 'F':
-                messages.add_message(request, constants.WARNING, 'Consultation already FINISHED! No operations available.')
-                return redirect(f'doctors/appointments_dr_area/{id_appointment}')
+            if appointment.status in ['C', 'F']:
+                messages.add_message(request, constants.WARNING, f'Consultation already {appointment.get_status_display()}! No operations available.')
+                return redirect(reverse('appointments_dr_area', args=[id_appointment]))
+            
             appointment.link =link
             appointment.status = 'S'
             appointment.save()
             messages.add_message(request, constants.SUCCESS, 'Started consultation.')
+        return (request, 'appointments_dr_area.html', {
+            'appointment': appointment,
+            'isDoctor': isDoctor(request.user),
+            'documents': documents
+        })
     except Appointment.DoesNotExist:
          messages.add_message(request, constants.ERROR, 'Appointment NOT FOUND!')
-         return redirect(f'/appointments_dr')
+         return redirect(reverse('appointments_dr'))
 @login_required
 def finish_appointment(request, id_appointment):
+    appointment=get_object_or_404(Appointment, id=id_appointment)
     if not isDoctor(request.user):
         messages.add_message(request, constants.WARNING, 'Only doctors can open agenda!')
         return redirect('/users/logout')
     
-    appointment=Appointment.objects.get(id=id_appointment)
     # DEFENSIVE CODE: Verifying if the user logged is the doctor rsponsaible for the appointment, if NOT, do not allow!
     if request.user!=appointment.open_agenda.user:
         messages.add_message(request, constants.ERROR, 'You cannot finish this appointment!')
         return redirect(reverse('open_agenda')) #Take the user back to the page.
+    
     appointment.status='F' #Get finished appointments
     appointment.save() #Save it to the DB.
     messages.add_message(request, constants.SUCCESS, 'Appointment successfully canceled/ finished')
@@ -149,28 +153,28 @@ def finish_appointment(request, id_appointment):
 
 @login_required
 def add_document(request, id_appointment):
+    appointment=get_object_or_404(Appointment, id=id_appointment)
     if not isDoctor(request.user):
         messages.add_message(request, constants.WARNING, 'Only doctors can open agenda!')
         return redirect('/users/logout')
     
-    appointment=Appointment.objects.get(id=id_appointment)
     if request.user!=appointment.open_agenda.user:
         messages.add_message(request, constants.ERROR, 'You cannot finish this appointment!')
-        return redirect(f'doctors/open_agenda') #Take the user back to the page.
-    title = request.POST.get('titulo') 
+        return redirect(reverse('open_agenda')) #Take the user back to the page.
     document = request.FILES.get('documento')
+    title = request.POST.get('titulo')
     
     if not document:
         messages.add_message(request, constants.ERROR('You must fill the <document> field.'))
-        return redirect(f'doctors/appointments_dr_area/{id_appointment}') 
-    document = Document(
+        return redirect(reverse('appointments_dr_area', args=[id_appointment])) 
+    new_document = Document(
         appointment=appointment,
         title=title,
         document=document
     )
-    document.save()
+    new_document.save()
     messages.add_message(request, constants.SUCCESS, 'Document successfully created.')
-    return redirect(f'doctors/appointments_dr_area/{id_appointment}')
+    return redirect(reverse('appointments_dr_area', args=[id_appointment]))
 
 @login_required
 def dashboard(request):
