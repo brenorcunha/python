@@ -7,6 +7,10 @@ loaded_image = cv2.imread("corshow.png", 1)
 # Display the loaded image in a window
 cv2.imshow("Loaded Image:", loaded_image)
 
+# Changing the image to gray scale:
+# gray_image = cv2.cvtColor(loaded_image, cv2.COLOR_BGR2GRAY)
+# cv2.imwrite('image_gray.png', gray_image)
+
 # Modify pixel values (in BGR order) at position (0, 0) for each color channel
 loaded_image.itemset((0, 0, 2), 255)  # Set red channel to 255
 loaded_image.itemset((0, 0, 1), 0)    # Set green channel to 0
